@@ -1,0 +1,56 @@
+$border: wide green;
+#infobox {
+    layout: horizontal;
+    background: $boost;
+    height: 4;
+    margin: 0;
+    min-width: 50;
+    padding: 0;
+    border: ascii $accent;
+}
+
+#search {
+    layout: horizontal;
+    background: $boost;
+    height: 3;
+    margin: 0;
+    min-width: 50;
+    padding: 0;
+    border: ascii $accent; 
+}
+
+#table  {
+    width: 100%;
+    scrollbar-size: 0 1;
+    border: ascii $accent;
+    height: 100%;
+}
+
+Container {
+    height: 70%;
+}
+
+GlobalVarsModal {
+    align: center middle;
+}
+
+TmuxModal {
+    align: center middle;
+}
+
+
+ArgsEditModal {
+    align: center middle;
+}
+
+ArgsEditModal > Container {
+    width: 100%;
+    height: auto;
+    padding: 2;
+    border: ascii $accent;
+}
+
+ArgsEditModal > Container > Input {
+    width: 100%;
+    height: auto;
+}

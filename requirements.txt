@@ -1,0 +1,7 @@
+libtmux
+docutils
+pyperclip
+pyyaml
+pyfzf
+textual
+rich
