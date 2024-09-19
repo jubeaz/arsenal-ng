@@ -31,7 +31,7 @@ class ArsenalNGGui(App):
     input_buffer = ""
     cmd = ""
     args = None
-    arsenalng_global_vars = dict()
+    arsenalng_global_vars = {}
     tmux_session = None
     tmux_server = None
 
@@ -149,7 +149,7 @@ class ArsenalNGGui(App):
             if self.filtered_cheats[self.w_cheats_dt.cursor_row].command == ">exit":
                 self.exit()
             elif self.filtered_cheats[self.w_cheats_dt.cursor_row].command == ">clear":
-                self.arsenalng_global_vars = dict()
+                self.arsenalng_global_vars = {}
             elif self.filtered_cheats[self.w_cheats_dt.cursor_row].command == ">reload":
                 self.load_arsenalng_global_vars()
             elif self.filtered_cheats[self.w_cheats_dt.cursor_row].command == ">save":

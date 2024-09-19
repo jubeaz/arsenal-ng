@@ -1,10 +1,7 @@
 import argparse
-import json
 import os
 import fcntl
 import termios
-import re
-import time
 from shutil import copy
 from curses import wrapper
 from rich import print
@@ -60,9 +57,6 @@ class ArsenalNG:
 
     def run(self):
         args = self.get_args()
-        #if args.tmux:
-        #    self.check_tmux(args)
-
         # load cheatsheets
         cheatsheets = CheatDict().read_files(config.CHEATS_PATHS, config.FORMATS,
                                                 config.EXCLUDE_LIST)
@@ -121,18 +115,6 @@ class ArsenalNG:
             print(message)
         # restore TTY attribute for stdin
         termios.tcsetattr(stdin, termios.TCSADRAIN, oldattr)
-
-    def check_tmux(self, args):
-        try:
-            import libtmux
-        except ImportError:
-            raise RuntimeError("Could not load libtmux") from None
-        pane_path = args.tmux_new.split(":")
-        try:
-            self.tmux_server = libtmux.Server()
-            self.tmux_session = self.tmux_server.sessions.get(session_name=pane_path[0])
-        except libtmux._internal.query_list.ObjectDoesNotExist:
-            raise RuntimeError(f"Could not find session {pane_path[0]}") from None
 
 def main():
     if not os.path.exists(config.CONFIG_PATH):
