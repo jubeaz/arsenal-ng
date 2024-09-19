@@ -15,8 +15,6 @@ from arsenalng.gui.guing import ArsenalNGGui
 
 
 class ArsenalNG:
-    tmux_server = None
-    tmux_session = None
     gui = None
 
     def __init__(self):
@@ -63,7 +61,7 @@ class ArsenalNG:
         if args.check:
             check.check(cheatsheets)
         else:
-            self.gui = ArsenalNGGui(cheatsheets=cheatsheets, args=args, tmux_session=self.tmux_session) 
+            self.gui = ArsenalNGGui(cheatsheets=cheatsheets, args=args) 
             self.start(args, cheatsheets)
 
     def start(self, args, cheatsheets):
@@ -73,16 +71,16 @@ class ArsenalNG:
         elif args.copy: # OPT: Copy CMD to clipboard
             try:
                 import pyperclip
-                pyperclip.copy(cmd.cmdline)
+                pyperclip.copy(cmd)
             except ImportError:
                 pass
         elif args.print: # OPT: Only print CMD
-            print(cmd.cmdline)
+            print(cmd)
         elif args.outfile: # OPT: Write in file
             with open(args.outfile, "w") as f:
-                f.write(cmd.cmdline)
+                f.write(cmd)
         elif args.exec: # OPT: Exec
-            os.system(cmd.cmdline)
+            os.system(cmd)
         else: # DEFAULT: Prefill Shell CMD
             self.prefil_shell_cmd(cmd)
 
@@ -101,7 +99,7 @@ class ArsenalNG:
         termios.tcsetattr(stdin, termios.TCSANOW, newattr)
         # write the selected command in stdin queue
         try:
-            for c in cmd.cmdline:
+            for c in cmd:
                 fcntl.ioctl(stdin, termios.TIOCSTI, c)
         except OSError:
             message = "========== OSError ============\n"

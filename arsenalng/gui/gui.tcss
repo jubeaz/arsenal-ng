@@ -26,18 +26,123 @@ $border: wide green;
     height: 100%;
 }
 
+
 Container {
     height: 70%;
+}
+
+Horizontal {
+    width: 70%;
+    height: 25%;
 }
 
 GlobalVarsModal {
     align: center middle;
 }
 
+
 TmuxModal {
     align: center middle;
 }
+TmuxModal > Vertical {
+    align: center middle;
+    height:  30%;
+    width: 40%;
+    margin: 0;
+    border: ascii $accent;
+}
 
+TmuxModal > Vertical > Horizontal{
+    width: 100%;
+    height: 50%;
+    margin: 0;
+    align: center middle;
+}
+
+TmuxModal > Vertical > Horizontal > Input {
+    width: 20%;
+    height: auto;
+    border: solid red ;
+    margin: 0;
+}
+
+#session_chosen {
+    width: 40%;
+    height: 100%;
+    align: center middle;
+    margin: 0;
+}
+
+#window_chosen {
+    width: 40%;
+    height: 100%;
+    align: center middle;
+    margin: 0;
+}
+
+#pane_chosen {
+    width: 20%;
+    height: 100%;
+    align: center middle;
+    margin: 0;
+}
+
+TmuxModal > Vertical > Horizontal > ListView {
+    width: 40%;
+    height: 100%;
+    border: tall blue ;
+    margin: 0;
+}
+
+#pane_li {
+    width: 20%;
+    height: 100%;
+    border: tall blue ;
+    margin: 0;
+}
+
+TmuxModal > Vertical > Horizontal > Button {
+    width: 80%;
+    height: auto;
+    align: center middle;
+    border: solid blue ;
+}
+
+#tmux_pane_cmd {
+    width: 20%;
+    height: auto;
+    align: center middle;
+}
+
+#tmuxmodal_horizontal_top {
+    width: 100%;
+    height: 20%;
+    /* border: ascii green ; */
+    margin: 0;
+    align: center middle;
+}
+
+
+#tmuxmodal_horizontal_middle {
+    width: 100%;
+    height: 60%;
+    /* border: ascii green ; */
+    margin: 0;
+    align: center middle;
+}
+
+#tmuxmodal_horizontal_bottom {
+    width: 100%;
+    height: 20%;
+    /* border: ascii green ; */
+    margin: 0;
+    align: center middle;
+}
+
+
+HelpModal {
+    align: center middle;
+}
 
 ArgsEditModal {
     align: center middle;

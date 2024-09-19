@@ -14,45 +14,49 @@ from arsenalng.gui.widgets.cheasdatatable import CheatsDataTable
 from arsenalng.gui.modals.argseditmodal import ArgsEditModal
 from arsenalng.gui.modals.globalvarsmodal import GlobalVarsModal
 from arsenalng.gui.modals.tmuxmodal import TmuxModal
-
-
-
-
-class FakeCommand:
-    def __init__(self, cmdline):
-        self.cmdline = cmdline
-
-            
+from arsenalng.gui.modals.helpmodal import HelpModal
+       
 class ArsenalNGGui(App):
     CSS_PATH = "gui.tcss"
     AUTO_FOCUS = "Input"
     global_cheats = []  # all cheats
     filtered_cheats = []  # cheats after search
     input_buffer = ""
-    cmd = ""
+    cmdline = ""
     args = None
     arsenalng_global_vars = {}
+
     tmux_session = None
     tmux_server = None
 
     arg_edit_modal = None
     global_vars_modal = None
     tmux_modal = None
+    help_modal = None
     
     w_cheats_dt = None
     w_search_input = None
     w_cmd_preview = None
 
-    def __init__(self, driver_class=None, css_path=None, watch_css=False, cheatsheets=None, args=None, tmux_session=None):
+    def __init__(self, driver_class=None, css_path=None, watch_css=False, cheatsheets=None, args=None):
         super().__init__(driver_class=None, css_path=None, watch_css=False)
         self.args = args
-        self.tmux_session = tmux_session
-        self.tmux_server = None
+        self.cmdline = ""
+
+        self.tmux_session = None
+        if self.args.tmux is not None:
+            self.tmux_server_connect()
+        else:   
+            self.tmux_server = None
+        
         self.arg_edit_modal = None
         self.global_vars_modal = None
         self.tmux_modal = None
+        self.help_modal = HelpModal()
+
         for value in cheatsheets.values():
             self.global_cheats.append(value)
+
         self.load_arsenalng_global_vars()
         self.filtered_cheats = self.filter_cheats()
 
@@ -113,19 +117,9 @@ class ArsenalNGGui(App):
         self.w_cheats_dt.clear(columns=True)
         self.compute_w_cheats_dt()
 
-    def on_key(self, event: events.Key) -> None:
-        def display_global_vars(resut: str) -> None:
-            """Called when QuitScreen is dismissed."""
-            self.global_vars_modal = None
 
-        def check_cmd(cmdline: str) -> None:
-            """Called when QuitScreen is dismissed."""
-            if cmdline:
-                self.process_cmdline(cmdline)
-            else:
-                self.arg_edit_modal.cmd = None
-                self.arg_edit_modal = None
  
+    def on_key(self, event: events.Key) -> None:
         # https://github.com/Textualize/textual/blob/main/src/textual/keys.py
         if event.key == "down":
             r = self.w_cheats_dt.cursor_row
@@ -144,33 +138,23 @@ class ArsenalNGGui(App):
         elif event.key == "pagedown":
             self.w_cheats_dt.action_page_down()
             self.w_cmd_preview.load_text(f"{self.filtered_cheats[self.w_cheats_dt.cursor_row].name} \n {self.filtered_cheats[self.w_cheats_dt.cursor_row].printable_command}")
-
+        elif event.key == "f1":
+            self.push_screen(self.help_modal)
+        elif event.key == "f2":
+            self.global_vars_modal = GlobalVarsModal(self.arsenalng_global_vars)
+            self.push_screen(self.global_vars_modal, self.global_vars_callback)
+        elif event.key == "f3":
+            self.load_arsenalng_global_vars()
+        elif event.key == "f4":
+            self.save_arsenalng_global_vars()
+        elif event.key == "f5":
+            self.arsenalng_global_vars = {}           
         elif event.key == "enter":
-            if self.filtered_cheats[self.w_cheats_dt.cursor_row].command == ">exit":
-                self.exit()
-            elif self.filtered_cheats[self.w_cheats_dt.cursor_row].command == ">clear":
-                self.arsenalng_global_vars = {}
-            elif self.filtered_cheats[self.w_cheats_dt.cursor_row].command == ">reload":
-                self.load_arsenalng_global_vars()
-            elif self.filtered_cheats[self.w_cheats_dt.cursor_row].command == ">save":
-                self.save_arsenalng_global_vars()
-            elif self.filtered_cheats[self.w_cheats_dt.cursor_row].command == ">show":
-                self.global_vars_modal = GlobalVarsModal(self.arsenalng_global_vars)
-                self.push_screen(self.global_vars_modal, display_global_vars)
-            else:
-                self.arg_edit_modal = ArgsEditModal(self.filtered_cheats[self.w_cheats_dt.cursor_row], self.arsenalng_global_vars)
-                self.push_screen(self.arg_edit_modal, check_cmd)
+            self.arg_edit_modal = ArgsEditModal(self.filtered_cheats[self.w_cheats_dt.cursor_row], self.arsenalng_global_vars)
+            self.push_screen(self.arg_edit_modal, self.arg_edit_callback)
 
         elif event.key == "escape":
             self.exit()      
-
-
-    def filter_cheats(self):
-        """
-        Return the list of cheatsheet who match the searched term
-        :return: list of cheatsheet to show
-        """
-        return list(filter(self.match, self.global_cheats)) if self.input_buffer != "" else self.global_cheats
 
     def compute_w_cheats_dt(self):
         self.filtered_cheats = self.filter_cheats()
@@ -182,7 +166,14 @@ class ArsenalNGGui(App):
             tags = cheat.get_tags()
             self.w_cheats_dt.add_row(tags, cheat.str_title, cheat.name, cheat.printable_command, key=i)
 
-    def match(self, cheat):
+    def filter_cheats(self):
+        """
+        Return the list of cheatsheet who match the searched term
+        :return: list of cheatsheet to show
+        """
+        return list(filter(self.filter_cheats_match, self.global_cheats)) if self.input_buffer != "" else self.global_cheats
+
+    def filter_cheats_match(self, cheat):
         """
         Function called by the iterator to verify if the cheatsheet match the entered values
         :param cheat: cheat to check
@@ -213,73 +204,30 @@ class ArsenalNGGui(App):
     def is_main_screen_active(self):
         return self.arg_edit_modal is None
 
-    def process_cmdline(self, cmdline):
-        """Function that process the cmdline generated"""
-        if re.match(r"^\>set( [^= ]+=[^= ]+)+$", cmdline):
+    def process_internal_cmdline(self):
+        """Function that process the internal cmdline generated"""
+        if re.match(r"^\>set( [^= ]+=[^= ]+)+$", self.cmdline):
             # Add new glovar var
-            varlist = re.findall("([^= ]+)=([^= ]+)", cmdline)
+            varlist = re.findall("([^= ]+)=([^= ]+)", self.cmdline)
             for v in varlist:
                 self.arsenalng_global_vars[v[0]] = v[1]
-            return    
+            return
+
+    def process_cmdline(self):
+        """Function that process the cmdline generated"""
         if self.args.prefix:
-                cmdline = self.prefix_cmdline_with_prefix(cmdline)
+            self.prefix_cmdline_with_prefix(self.cmdline)
 
         if self.args.tmux is None:
-            self.exit(result=FakeCommand(cmdline))
+            self.exit(self.cmdline)
         else:
-            self.process_tmux(cmdline)
+            self.process_tmux()
 
     def prefix_cmdline_with_prefix(self, cmdline):
         if config.PREFIX_GLOBALVAR_NAME in self.arsenalng_global_vars:
-            cmdline = f"{self.arsenalng_global_vars[config.PREFIX_GLOBALVAR_NAME]} {cmdline}"
-        return cmdline
+            self.cmdline = f"{self.arsenalng_global_vars[config.PREFIX_GLOBALVAR_NAME]} {cmdline}"
 
-    def process_tmux(self, cmdline):
-        def validate_tmux_modal(resut: str) -> None:
-            self.tmux_modal = None
-            if not resut: # user cancel
-                return
-            # set back global vars
-            self.arsenalng_global_vars["arsenalng_tmux_session_name"] = resut["arsenalng_tmux_session_name"]
-            self.arsenalng_global_vars["arsenalng_tmux_window_name"] = resut["arsenalng_tmux_window_name"]
-            self.arsenalng_global_vars["arsenalng_tmux_pane_id"] = resut["arsenalng_tmux_pane_id"]
-            # if there error relaunch modal 
-            if self.tmux_server is None:
-                self.tmux_server = libtmux.Server()
-            try:
-                self.tmux_session = self.tmux_server.sessions.get(session_name=self.arsenalng_global_vars["arsenalng_tmux_session_name"])
-            except libtmux._internal.query_list.ObjectDoesNotExist:
-                raise RuntimeError(f"Could not find session {self.arsenalng_global_vars["arsenalng_tmux_session_name"]}") from None 
-            new_window = False
-            try:
-                window = self.tmux_session.select_window(self.arsenalng_global_vars["arsenalng_tmux_window_name"])
-            except libtmux.exc.LibTmuxException:
-                window = self.tmux_session.new_window(attach=False, window_name=self.arsenalng_global_vars["arsenalng_tmux_window_name"])
-                new_window = True
-            if new_window:
-                pane = window.panes[0] 
-            elif self.arsenalng_global_vars["arsenalng_tmux_pane_id"] == "": # all panes
-                pane = None
-            elif int(self.arsenalng_global_vars["arsenalng_tmux_pane_id"]) > len(window.panes):
-                pane = window.split_window(attach=False)
-                time.sleep(0.3)
-            else:
-                pane = window.panes[int(self.arsenalng_global_vars["arsenalng_tmux_pane_id"])]
-            if pane:
-                if self.args.exec:
-                    pane.send_keys(cmdline)
-                else:
-                    pane.send_keys(cmdline, enter=False)
-                    pane.select_pane()
-            else:
-                for pane in window.panes:
-                    if self.args.exec:
-                        pane.send_keys(cmdline)
-                    else:
-                        pane.send_keys(cmdline, enter=False)
-                        pane.select_pane()
-
-
+    def process_tmux(self):
         # assert tmux global var
         if "arsenalng_tmux_session_name" not in self.arsenalng_global_vars:
             self.arsenalng_global_vars["arsenalng_tmux_session_name"] = ""
@@ -287,7 +235,51 @@ class ArsenalNGGui(App):
             self.arsenalng_global_vars["arsenalng_tmux_window_name"] = ""
         if "arsenalng_tmux_pane_id" not in self.arsenalng_global_vars:
             self.arsenalng_global_vars["arsenalng_tmux_pane_id"] = ""
-        self.tmux_modal = TmuxModal(self.arsenalng_global_vars)
-        self.push_screen(self.tmux_modal, validate_tmux_modal)
+        self.tmux_modal = TmuxModal(self.arsenalng_global_vars, self.tmux_server)
+        self.push_screen(self.tmux_modal, self.tmux_callback)
 
+    def tmux_server_connect(self) -> None:
+        if self.tmux_server is None:
+            self.tmux_server = libtmux.Server()
+        assert self.tmux_server.is_alive()
+
+
+    def tmux_callback(self, result) -> None:
+        self.tmux_modal = None
+        if not result: # user cancel
+            return
+        # set back global vars
+        self.arsenalng_global_vars["arsenalng_tmux_session_name"] = result["arsenalng_tmux_session_name"]
+        self.arsenalng_global_vars["arsenalng_tmux_window_name"] = result["arsenalng_tmux_window_name"]
+        self.arsenalng_global_vars["arsenalng_tmux_pane_indx"] = result["arsenalng_tmux_pane_indx"]
+        if result["tmux_pane"]:
+            if self.args.exec:
+                result["tmux_pane"].send_keys(self.cmdline)
+            else:
+                result["tmux_pane"].send_keys(self.cmdline, enter=False)
+                result["tmux_pane"].select_pane()
+        else:
+            for pane in result["tmux_window"].panes:
+                if self.args.exec:
+                    pane.send_keys(self.cmdline)
+                else:
+                    pane.send_keys(self.cmdline, enter=False)
+                    pane.select_pane()
+
+    def global_vars_callback(self, resut: str) -> None:
+        """Called when QuitScreen is dismissed."""
+        self.global_vars_modal = None
+
+    def arg_edit_callback(self, cmdline: str) -> None:
+        """Called when QuitScreen is dismissed."""
+        self.cmdline = cmdline
+        
+        if cmdline is None:
+            self.arg_edit_modal.cmd = None
+            self.arg_edit_modal = None
+            return
+        if self.cmdline[0] == ">":
+            self.process_internal_cmdline()
+        else:
+            self.process_cmdline()
 
