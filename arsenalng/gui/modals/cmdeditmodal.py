@@ -1,6 +1,5 @@
-from textual.screen import ModalScreen
 from textual.widgets import Input, TextArea
-from textual.containers import Container
+from textual.containers import Container, VerticalScroll
 from textual import events, on
 import glob
 from os.path import isdir
@@ -8,14 +7,16 @@ from os import sep
 
 from arsenalng.data import config
 from arsenalng.models.command import Command
+from arsenalng.gui.modals.mouselessmodal import MouselessModal
 
-class ArgsEditModal(ModalScreen[str]):
+
+class CmdEditModal(MouselessModal):
     cmd = None
     infobox = None
     focus_save = None
 
     def __init__(self, cheat, arsenalng_global_vars, name=None, id=None, classes=None):
-        self.infobox = TextArea.code_editor(id="infobox", text="")
+        self.infobox = TextArea.code_editor(id="cmdeditModal_infobox", text="")
         self.infobox.cursor_blink = False
         self.infobox.read_only = True
         self.inputs = {}
@@ -25,28 +26,17 @@ class ArgsEditModal(ModalScreen[str]):
     def compose(self):
         with Container():
             yield self.infobox
-            for arg_name, arg_data in self.cmd.args.items():
-                self.inputs[arg_name] = Input(id=arg_name, placeholder=arg_name, type="text", value=arg_data["value"])
-                yield self.inputs[arg_name]
+            with VerticalScroll():
+                for arg_name, arg_data in self.cmd.args.items():
+                    self.inputs[arg_name] = Input(id=arg_name, placeholder="", type="text", value=arg_data["value"])
+                    yield self.inputs[arg_name]
+                    self.inputs[arg_name].border_title = arg_name
         self.infobox.load_text(self.cmd.preview())
 
     def on_mount(self) -> None:
         if len(self.inputs):
             self.set_focus(self.inputs[next(iter(self.inputs.keys()))])
             self.focus_save = self.focused
-
-    def on_click(self, event: events.Click) -> None:
-        """Prevent click"""
-        event.prevent_default()
-        event.stop()
-        return
-
-    def on_mouse_down(self, event: events.MouseDown) -> None:
-        """Prevent click"""
-        event.prevent_default()
-        event.stop()
-        self.set_focus(self.focus_save)
-        return
 
     @on(Input.Changed)
     def recompute_table(self, event: Input.Changed):
@@ -73,6 +63,7 @@ class ArgsEditModal(ModalScreen[str]):
                 if self.focused == self.infobox:
                     self.focus_previous()
             self.focus_save = self.focused
+            self.query_one(VerticalScroll).scroll_to_widget(self.focused)
         elif event.key == "ctrl+t":
             try:
                 from pyfzf.pyfzf import FzfPrompt

@@ -1,55 +1,189 @@
 $border: wide green;
-#infobox {
+
+$border-color-nofocus: $panel;
+$border-title-color-nofocus: green;
+$border-color-focus: green;
+$border-title-color-focus: green;
+
+
+
+Input {
+    border: round $border-color-nofocus;
+    background: transparent;
+    border-title-color: $border-color-nofocus;
+    border-title-style: bold;
+    color: green;
+}
+
+
+Input > .input--placeholder {
+    border: round $border-color-nofocus;
+    background: transparent;
+}
+
+Input:focus {
+    border: round $border-color-focus;
+    border-title-color: $border-title-color-focus;
+    border-title-style: bold;
+}
+
+
+Input:focus> .input--placeholder {
+    border: round $border-color-focus;
+    color: green;
+}
+
+
+#guing_infobox {
     layout: horizontal;
-    background: $boost;
     height: 4;
     margin: 0;
     min-width: 50;
     padding: 0;
-    border: ascii $accent;
+    color: green;
+    border-title-color: $border-title-color-focus;
+    border-title-style: bold;
 }
 
-#search {
+
+
+#guing_search {
     layout: horizontal;
-    background: $boost;
+    /*background: $boost;*/
     height: 3;
     margin: 0;
     min-width: 50;
     padding: 0;
-    border: ascii $accent; 
+    /*border: ascii $accent;*/ 
+    color: green;
 }
 
-#table  {
+#guing_table  {
     width: 100%;
     scrollbar-size: 0 1;
-    border: ascii $accent;
+    scrollbar-color: $border-title-color-focus;
+    border: round $border-color-nofocus;
+    border-title-color: green;
+    border-title-style: bold;
     height: 100%;
+    color: green
+
+}
+
+#guing_table:focus{
+    border: round $border-color-focus;
+}
+
+#guing_table > .datatable--header {
+    text-style: bold;
+    background: $background;
+    /* color: $primary; */
+    color: green
+}
+
+#guing_table > .datatable--cursor {
+    background: $panel;
+    color: auto;
+}
+
+#guing_table:focus > .datatable--cursor {
+    background: $secondary;
+}
+
+#guing_table > .datatable--header-hover {
+    text-style: bold;
+    background: $background;
+    color: $primary;
+}
+
+#guing_table > .datatable--hover {
+    color: $text;
+    background: $boost;
+}
+
+
+VerticalScroll {
+    border: round $border-color-focus;
+    border-title-color: $border-title-color-focus;
+    border-title-style: bold;
+    scrollbar-size: 0 1;
+    scrollbar-color: $border-title-color-focus;
 }
 
 
 Container {
     height: 70%;
+    background: transparent;
+    border: round $border-color-focus;
+    border-title-color: $border-title-color-focus;
+    border-title-style: bold;
 }
 
 Horizontal {
     width: 70%;
     height: 25%;
+    background: transparent;
+    border: round $border-color-focus;
+    border-title-color: $border-title-color-focus;
+    border-title-style: bold;
 }
+
+Vertical {
+    width: 70%;
+    height: 25%;
+    background: transparent;
+    border: round $border-color-focus;
+    border-title-color: $border-title-color-focus;
+    border-title-style: bold;
+}
+
 
 GlobalVarsModal {
     align: center middle;
 }
 
+GlobalVarsEditModal {
+    align: center middle;
+}
+
+GlobalVarsEditModal > VerticalScroll  {
+    width: auto;
+    height: 70%;
+}
+
+GlobalVarsEditModal > VerticalScroll > Input {
+    align: left middle;
+    width: auto;
+    min-width: 50;
+    height: 3;
+    margin: 0;
+    padding: 0 0;
+}
+
+CheatPreviewModal {
+    align: center middle;
+}
+
+#previewbox {
+    layout: horizontal;
+    /*background: $boost;*/
+    width: 70%;
+    height: 25%;
+    margin: 0;
+    min-width: 50;
+    padding: 0;
+    border: ascii $accent;
+}
 
 TmuxModal {
     align: center middle;
 }
+
 TmuxModal > Vertical {
     align: center middle;
     height:  30%;
     width: 40%;
     margin: 0;
-    border: ascii $accent;
 }
 
 TmuxModal > Vertical > Horizontal{
@@ -57,6 +191,7 @@ TmuxModal > Vertical > Horizontal{
     height: 50%;
     margin: 0;
     align: center middle;
+    border: blank
 }
 
 TmuxModal > Vertical > Horizontal > Input {
@@ -66,39 +201,46 @@ TmuxModal > Vertical > Horizontal > Input {
     margin: 0;
 }
 
-#session_chosen {
+#tmuxmodal_session_chosen {
     width: 40%;
     height: 100%;
     align: center middle;
+    text-align: center;
     margin: 0;
 }
 
-#window_chosen {
+#tmuxmodal_window_chosen {
     width: 40%;
     height: 100%;
     align: center middle;
+    text-align: center;
     margin: 0;
 }
 
-#pane_chosen {
+#tmuxmodal_pane_chosen {
     width: 20%;
     height: 100%;
     align: center middle;
+    text-align: center;
     margin: 0;
 }
 
 TmuxModal > Vertical > Horizontal > ListView {
     width: 40%;
     height: 100%;
-    border: tall blue ;
     margin: 0;
+    border: round $border-color-focus;
+    border-title-color: $border-title-color-focus;
+    border-title-style: bold;
 }
 
-#pane_li {
+#tmuxmodal_pane_li {
     width: 20%;
     height: 100%;
-    border: tall blue ;
     margin: 0;
+    border: round $border-color-focus;
+    border-title-color: $border-title-color-focus;
+    border-title-style: bold;
 }
 
 TmuxModal > Vertical > Horizontal > Button {
@@ -108,7 +250,7 @@ TmuxModal > Vertical > Horizontal > Button {
     border: solid blue ;
 }
 
-#tmux_pane_cmd {
+#tmuxmodal_tmux_pane_cmd {
     width: 20%;
     height: auto;
     align: center middle;
@@ -117,7 +259,6 @@ TmuxModal > Vertical > Horizontal > Button {
 #tmuxmodal_horizontal_top {
     width: 100%;
     height: 20%;
-    /* border: ascii green ; */
     margin: 0;
     align: center middle;
 }
@@ -126,7 +267,6 @@ TmuxModal > Vertical > Horizontal > Button {
 #tmuxmodal_horizontal_middle {
     width: 100%;
     height: 60%;
-    /* border: ascii green ; */
     margin: 0;
     align: center middle;
 }
@@ -134,28 +274,29 @@ TmuxModal > Vertical > Horizontal > Button {
 #tmuxmodal_horizontal_bottom {
     width: 100%;
     height: 20%;
-    /* border: ascii green ; */
     margin: 0;
     align: center middle;
 }
 
-
-HelpModal {
+CmdEditModal {
     align: center middle;
 }
 
-ArgsEditModal {
-    align: center middle;
+CmdEditModal > Container  {
+    width: 70%;
+    height: 70%;
 }
 
-ArgsEditModal > Container {
+CmdEditModal > Container > VerticalScroll {
     width: 100%;
     height: auto;
-    padding: 2;
-    border: ascii $accent;
 }
 
-ArgsEditModal > Container > Input {
+CmdEditModal > Container > VerticalScroll > Input {
+    layout: horizontal;
     width: 100%;
-    height: auto;
+    height: 3;
+    margin: 0;
+    min-width: 50;
+    padding: 0;
 }

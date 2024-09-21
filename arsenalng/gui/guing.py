@@ -1,22 +1,39 @@
 from textual.app import App, ComposeResult
-from textual.widgets import Label, Input, TextArea
+from textual.widgets import Label, Input, TextArea, Footer
+from textual.binding import Binding
 from textual.containers import Container
 from textual import events, on
 from os.path import exists
 import json
 import math
-import time
 import re
 import libtmux
 
 from arsenalng.data import config
-from arsenalng.gui.widgets.cheasdatatable import CheatsDataTable
-from arsenalng.gui.modals.argseditmodal import ArgsEditModal
+from arsenalng.gui.widgets.mouselessdatatable import MouselessDataTable
+from arsenalng.gui.modals.cmdeditmodal import CmdEditModal
 from arsenalng.gui.modals.globalvarsmodal import GlobalVarsModal
+from arsenalng.gui.modals.globalvarseditmodal import GlobalVarsEditModal
+
 from arsenalng.gui.modals.tmuxmodal import TmuxModal
-from arsenalng.gui.modals.helpmodal import HelpModal
+from arsenalng.gui.modals.cheatpreviewmodal import CheatPreviewModal
        
 class ArsenalNGGui(App):
+    BINDINGS = [
+        Binding(key="f1", action="edit_global_vars", description="Edit GlobalVars"),
+        Binding(key="f2", action="show_global_vars", description="Show GlobalVars"),
+        Binding(key="f3", action="load_global_vars", description="Reload"),
+        Binding(key="f4", action="save_global_vars", description="Save"),
+        Binding(key="f5", action="clear_global_vars", description="clear"),
+        Binding(key="escape", action="quit", description="quit"),
+        Binding(key="down", action="next", description="Next", show=True),
+        Binding(key="up", action="prev", description="Prev", show=True),
+        Binding(key="pageup", action="page_up", description="PG Up", show=True),
+        Binding(key="pagedown", action="page_down", description="PG Down", show=True),
+        Binding(key="enter", action="cheat_edit", description="Edit", show=True),
+        Binding(key="tab", action="cheat_preview", description="Preview", show=True),
+    ]
+
     CSS_PATH = "gui.tcss"
     AUTO_FOCUS = "Input"
     global_cheats = []  # all cheats
@@ -29,14 +46,16 @@ class ArsenalNGGui(App):
     tmux_session = None
     tmux_server = None
 
-    arg_edit_modal = None
+    cmd_edit_modal = None
     global_vars_modal = None
     tmux_modal = None
-    help_modal = None
+    cheat_preview_modal = None
     
     w_cheats_dt = None
     w_search_input = None
     w_cmd_preview = None
+
+    focus_save = None
 
     def __init__(self, driver_class=None, css_path=None, watch_css=False, cheatsheets=None, args=None):
         super().__init__(driver_class=None, css_path=None, watch_css=False)
@@ -49,46 +68,39 @@ class ArsenalNGGui(App):
         else:   
             self.tmux_server = None
         
-        self.arg_edit_modal = None
+        self.cmd_edit_modal = None
         self.global_vars_modal = None
         self.tmux_modal = None
-        self.help_modal = HelpModal()
 
         for value in cheatsheets.values():
             self.global_cheats.append(value)
 
-        self.load_arsenalng_global_vars()
+        self.action_load_global_vars()
         self.filtered_cheats = self.filter_cheats()
-
-    def load_arsenalng_global_vars(self):
-        if exists(config.savevarfile):
-            with open(config.savevarfile) as f:
-                self.arsenalng_global_vars = json.load(f)
-
-    def save_arsenalng_global_vars(self):
-        with open(config.savevarfile, "w") as f:
-            f.write(json.dumps(self.arsenalng_global_vars))
 
     def compose(self) -> ComposeResult:
         """Create child widgets for the app."""
         self.cursor_blink = False
 
-        self.w_cmd_preview = TextArea.code_editor(id="infobox", text="")
+        self.w_cmd_preview = TextArea.code_editor(id="guing_infobox", text="")
         self.w_cmd_preview.cursor_blink = False
         self.w_cmd_preview.read_only = True
+        self.w_cmd_preview.border_title = "Preview"
 
-        self.w_cheats_dt = CheatsDataTable(id="table")
+        self.w_cheats_dt = MouselessDataTable(id="guing_table")
         self.w_cheats_dt.cursor_type = "row"
         self.w_cheats_dt.zebra_stripes = True
-
-        self.w_search_input = Input(id="search", placeholder="Search", type="text")
+        self.w_cheats_dt.border_title = "Commands"
+        
+        self.w_search_input = Input(id="guing_search", placeholder="Search", type="text")
+        self.w_search_input.border_title = "Search"
 
         yield self.w_cmd_preview
         yield self.w_search_input
         yield Container(self.w_cheats_dt)
         # A VOIR CE QUE L'ON FAIT ICI
         yield Label("count")
-
+        yield Footer()
 
     def on_mount(self) -> None:
         win_width = self.size.width
@@ -100,11 +112,57 @@ class ArsenalNGGui(App):
         self.col4_size = math.floor(max_width * 55 / 100)
         self.compute_w_cheats_dt()
         self.set_focus(self.w_search_input)
+        self.focus_save = self.w_search_input
 
-    def on_mouse_down(self) -> None:
-        """Reset focus on w_search_input"""
-        self.set_focus(self.w_search_input)
+    def on_click(self, event: events.Click) -> None:
+        """Prevent Click"""
+        event.prevent_default()
+        event.stop()
+        self.set_focus(self.focus_save)
+        return
 
+    def on_mouse_down(self, event: events.MouseDown) -> None:
+        """Prevent MouseDown"""
+        event.prevent_default()
+        event.stop()
+        self.set_focus(self.focus_save)
+        return
+
+    def on_mouse_up(self, event: events.MouseUp) -> None:
+        """Prevent MouseUp"""
+        event.prevent_default()
+        event.stop()
+        self.set_focus(self.focus_save)
+        return
+
+    def on_mouse_scroll_down(self, event: events.MouseScrollDown) -> None:
+        """Prevent MouseScrollDown"""
+        event.prevent_default()
+        event.stop()
+        return
+
+    def on_mouse_scroll_up(self, event: events.MouseScrollUp) -> None:
+        """Prevent MouseScrollUp"""
+        event.prevent_default()
+        event.stop()
+        return
+
+    def on_mouse_capture(self, event: events.MouseCapture) -> None:
+        """Prevent MouseCapture"""
+        event.prevent_default()
+        event.stop()
+        return 
+    def on_mouse_event(self, event: events.MouseEvent) -> None:
+        """Prevent MouseEvent"""
+        event.prevent_default()
+        event.stop()
+        return 
+    def on_mouse_release(self, event: events.MouseRelease) -> None:
+        """Prevent MouseReleasep"""
+        event.prevent_default()
+        event.stop()
+        return 
+ 
     def action_focus_previous(self):
         return
 
@@ -117,44 +175,65 @@ class ArsenalNGGui(App):
         self.w_cheats_dt.clear(columns=True)
         self.compute_w_cheats_dt()
 
-
  
     def on_key(self, event: events.Key) -> None:
         # https://github.com/Textualize/textual/blob/main/src/textual/keys.py
-        if event.key == "down":
-            r = self.w_cheats_dt.cursor_row
-            self.w_cheats_dt.move_cursor(row=r + 1)
-            self.w_cmd_preview.load_text(f"{self.filtered_cheats[self.w_cheats_dt.cursor_row].name} \n {self.filtered_cheats[self.w_cheats_dt.cursor_row].printable_command}")
-            
-        elif event.key == "up":
-            r = self.w_cheats_dt.cursor_row
-            self.w_cheats_dt.move_cursor(row=r - 1)
-            self.w_cmd_preview.load_text(f"{self.filtered_cheats[self.w_cheats_dt.cursor_row].name} \n {self.filtered_cheats[self.w_cheats_dt.cursor_row].printable_command}")
+        if event.key == "enter": # need here because enter catched by search input
+            self.cmd_edit_modal = CmdEditModal(self.filtered_cheats[self.w_cheats_dt.cursor_row], self.arsenalng_global_vars)
+            self.push_screen(self.cmd_edit_modal, self.arg_edit_callback)
+        elif event.key == "tab":
+            self.cheat_preveiw_modal = CheatPreviewModal(self.filtered_cheats[self.w_cheats_dt.cursor_row])
+            self.push_screen(self.cheat_preveiw_modal)
 
-        elif event.key == "pageup":
-            self.w_cheats_dt.action_page_up()
-            self.w_cmd_preview.load_text(f"{self.filtered_cheats[self.w_cheats_dt.cursor_row].name} \n {self.filtered_cheats[self.w_cheats_dt.cursor_row].printable_command}")
-
-        elif event.key == "pagedown":
-            self.w_cheats_dt.action_page_down()
-            self.w_cmd_preview.load_text(f"{self.filtered_cheats[self.w_cheats_dt.cursor_row].name} \n {self.filtered_cheats[self.w_cheats_dt.cursor_row].printable_command}")
-        elif event.key == "f1":
-            self.push_screen(self.help_modal)
-        elif event.key == "f2":
-            self.global_vars_modal = GlobalVarsModal(self.arsenalng_global_vars)
-            self.push_screen(self.global_vars_modal, self.global_vars_callback)
-        elif event.key == "f3":
-            self.load_arsenalng_global_vars()
-        elif event.key == "f4":
-            self.save_arsenalng_global_vars()
-        elif event.key == "f5":
-            self.arsenalng_global_vars = {}           
-        elif event.key == "enter":
-            self.arg_edit_modal = ArgsEditModal(self.filtered_cheats[self.w_cheats_dt.cursor_row], self.arsenalng_global_vars)
-            self.push_screen(self.arg_edit_modal, self.arg_edit_callback)
-
-        elif event.key == "escape":
+    def action_quit(self):
             self.exit()      
+
+
+    def action_edit_global_vars(self):
+        self.global_vars_modal = GlobalVarsEditModal(self.arsenalng_global_vars)
+        self.push_screen(self.global_vars_modal, self.edit_global_vars_callback) 
+
+    def action_show_global_vars(self):
+        self.global_vars_modal = GlobalVarsModal(self.arsenalng_global_vars)
+        self.push_screen(self.global_vars_modal, self.global_vars_callback)
+
+    def action_load_global_vars(self):
+        if exists(config.savevarfile):
+            with open(config.savevarfile) as f:
+                self.arsenalng_global_vars = json.load(f)
+
+    def action_save_global_vars(self):
+        with open(config.savevarfile, "w") as f:
+            f.write(json.dumps(self.arsenalng_global_vars, indent=4))
+
+    def action_clear_global_vars(self):
+        self.arsenalng_global_vars = {}
+
+    def action_next(self):
+        r = self.w_cheats_dt.cursor_row
+        self.w_cheats_dt.move_cursor(row=r + 1)
+        self.w_cmd_preview.load_text(f"{self.filtered_cheats[self.w_cheats_dt.cursor_row].name} \n {self.filtered_cheats[self.w_cheats_dt.cursor_row].printable_command}")
+
+    def action_prev(self):
+        r = self.w_cheats_dt.cursor_row
+        self.w_cheats_dt.move_cursor(row=r - 1)
+        self.w_cmd_preview.load_text(f"{self.filtered_cheats[self.w_cheats_dt.cursor_row].name} \n {self.filtered_cheats[self.w_cheats_dt.cursor_row].printable_command}")
+
+    def action_page_up(self):
+        self.w_cheats_dt.action_page_up()
+        self.w_cmd_preview.load_text(f"{self.filtered_cheats[self.w_cheats_dt.cursor_row].name} \n {self.filtered_cheats[self.w_cheats_dt.cursor_row].printable_command}")
+
+    def action_page_down(self):
+        self.w_cheats_dt.action_page_down()
+        self.w_cmd_preview.load_text(f"{self.filtered_cheats[self.w_cheats_dt.cursor_row].name} \n {self.filtered_cheats[self.w_cheats_dt.cursor_row].printable_command}")
+
+    def action_cheat_edit(self):
+        self.cmd_edit_modal = CmdEditModal(self.filtered_cheats[self.w_cheats_dt.cursor_row], self.arsenalng_global_vars)
+        self.push_screen(self.cmd_edit_modal, self.arg_edit_callback)
+
+    def action_cheat_preview(self):
+        self.cheat_preveiw_modal = CheatPreviewModal(self.filtered_cheats[self.w_cheats_dt.cursor_row])
+        self.push_screen(self.cheat_preveiw_modal)
 
     def compute_w_cheats_dt(self):
         self.filtered_cheats = self.filter_cheats()
@@ -202,7 +281,7 @@ class ArsenalNGGui(App):
         return True
 
     def is_main_screen_active(self):
-        return self.arg_edit_modal is None
+        return self.cmd_edit_modal is None
 
     def process_internal_cmdline(self):
         """Function that process the internal cmdline generated"""
@@ -266,17 +345,21 @@ class ArsenalNGGui(App):
                     pane.send_keys(self.cmdline, enter=False)
                     pane.select_pane()
 
-    def global_vars_callback(self, resut: str) -> None:
-        """Called when QuitScreen is dismissed."""
+    def global_vars_callback(self, result) -> None:
         self.global_vars_modal = None
+
+    def edit_global_vars_callback(self, result) -> None:
+        self.global_vars_modal = None
+        self.arsenalng_global_vars = result
+
 
     def arg_edit_callback(self, cmdline: str) -> None:
         """Called when QuitScreen is dismissed."""
         self.cmdline = cmdline
         
         if cmdline is None:
-            self.arg_edit_modal.cmd = None
-            self.arg_edit_modal = None
+            self.cmd_edit_modal.cmd = None
+            self.cmd_edit_modal = None
             return
         if self.cmdline[0] == ">":
             self.process_internal_cmdline()

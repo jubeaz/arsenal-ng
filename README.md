@@ -2,6 +2,17 @@
 
 issued from [https://github.com/Orange-Cyberdefense/arsenal](https://github.com/Orange-Cyberdefense/arsenal)
 
+## TODO
+* Dev a MouselessVerticalScroll
+* guing
+  * if command has no vars don't launch CmdEditModal
+* TmuxModal
+  * reload previously selected params
+* GlobalVarsEditModal
+  * add the possibility to create a global var
+
+#
+
 ## tmux mode
 
 Previous mode was working only when only one session was running. Since libtmux does not provide a way to identify tmux session the code is running in.
