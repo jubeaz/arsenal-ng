@@ -10,11 +10,11 @@ import re
 import libtmux
 
 from arsenalng.data import config
+from arsenalng.models.tmuxmanager import TmuxManager
 from arsenalng.gui.widgets.mouselessdatatable import MouselessDataTable
 from arsenalng.gui.modals.cmdeditmodal import CmdEditModal
 from arsenalng.gui.modals.globalvarsmodal import GlobalVarsModal
 from arsenalng.gui.modals.globalvarseditmodal import GlobalVarsEditModal
-
 from arsenalng.gui.modals.tmuxmodal import TmuxModal
 from arsenalng.gui.modals.cheatpreviewmodal import CheatPreviewModal
        
@@ -43,8 +43,7 @@ class ArsenalNGGui(App):
     args = None
     arsenalng_global_vars = {}
 
-    tmux_session = None
-    tmux_server = None
+    tmux_mgr = None
 
     cmd_edit_modal = None
     global_vars_modal = None
@@ -64,9 +63,9 @@ class ArsenalNGGui(App):
 
         self.tmux_session = None
         if self.args.tmux is not None:
-            self.tmux_server_connect()
+            self.tmux_mgr = TmuxManager(libtmux.Server())
         else:   
-            self.tmux_server = None
+            self.tmux_mgr = None
         
         self.cmd_edit_modal = None
         self.global_vars_modal = None
@@ -89,17 +88,15 @@ class ArsenalNGGui(App):
 
         self.w_cheats_dt = MouselessDataTable(id="guing_table")
         self.w_cheats_dt.cursor_type = "row"
-        self.w_cheats_dt.zebra_stripes = True
+        self.w_cheats_dt.zebra_stripes = False
         self.w_cheats_dt.border_title = "Commands"
         
         self.w_search_input = Input(id="guing_search", placeholder="Search", type="text")
         self.w_search_input.border_title = "Search"
-
-        yield self.w_cmd_preview
-        yield self.w_search_input
-        yield Container(self.w_cheats_dt)
-        # A VOIR CE QUE L'ON FAIT ICI
-        yield Label("count")
+        with Container():
+            yield self.w_cmd_preview
+            yield self.w_search_input
+            yield self.w_cheats_dt
         yield Footer()
 
     def on_mount(self) -> None:
@@ -314,31 +311,26 @@ class ArsenalNGGui(App):
             self.arsenalng_global_vars["arsenalng_tmux_window_name"] = ""
         if "arsenalng_tmux_pane_id" not in self.arsenalng_global_vars:
             self.arsenalng_global_vars["arsenalng_tmux_pane_id"] = ""
-        self.tmux_modal = TmuxModal(self.arsenalng_global_vars, self.tmux_server)
+        self.tmux_modal = TmuxModal(self.arsenalng_global_vars, self.tmux_mgr)
         self.push_screen(self.tmux_modal, self.tmux_callback)
-
-    def tmux_server_connect(self) -> None:
-        if self.tmux_server is None:
-            self.tmux_server = libtmux.Server()
-        assert self.tmux_server.is_alive()
-
 
     def tmux_callback(self, result) -> None:
         self.tmux_modal = None
         if not result: # user cancel
             return
+        self.tmux_mgr = result
         # set back global vars
-        self.arsenalng_global_vars["arsenalng_tmux_session_name"] = result["arsenalng_tmux_session_name"]
-        self.arsenalng_global_vars["arsenalng_tmux_window_name"] = result["arsenalng_tmux_window_name"]
-        self.arsenalng_global_vars["arsenalng_tmux_pane_indx"] = result["arsenalng_tmux_pane_indx"]
-        if result["tmux_pane"]:
+        self.arsenalng_global_vars["arsenalng_tmux_session_name"] = self.tmux_mgr.session_name
+        self.arsenalng_global_vars["arsenalng_tmux_window_name"] = self.tmux_mgr.window_name
+        self.arsenalng_global_vars["arsenalng_tmux_pane_indx"] = self.tmux_mgr.pane_indx
+        if self.tmux_mgr.pane:
             if self.args.exec:
-                result["tmux_pane"].send_keys(self.cmdline)
+                self.tmux_mgr.pane.send_keys(self.cmdline)
             else:
-                result["tmux_pane"].send_keys(self.cmdline, enter=False)
-                result["tmux_pane"].select_pane()
+                self.tmux_mgr.pane.send_keys(self.cmdline, enter=False)
+                self.tmux_mgr.pane.select_pane()
         else:
-            for pane in result["tmux_window"].panes:
+            for pane in self.tmux_mgr.window.panes:
                 if self.args.exec:
                     pane.send_keys(self.cmdline)
                 else:

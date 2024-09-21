@@ -1,20 +1,50 @@
 $border: wide green;
 
-$border-color-nofocus: $panel;
+/*$border-color-nofocus: $panel;*/
+/*$border-title-color-nofocus: green;*/
+/*$border-color-focus: green;*/
+/*$border-title-color-focus: green;*/
+
+/*$background-color-nofocus: rgb(41, 63, 22)*/
+$background-color-nofocus: rgb(16, 25, 9)
+$dark_green: rgba(0, 128, 0, 0.1)
+$border-color-nofocus: green;
 $border-title-color-nofocus: green;
-$border-color-focus: green;
-$border-title-color-focus: green;
+
+$border-color-focus: rgba(127, 231, 6, 1);
+$border-title-color-focus: rgba(127, 231, 6, 1);
 
 
+Screen > Container {
+    height: 95%;
+    border: round $border-color-focus;
+    border-title-color: $border-title-color-focus;
+    border-title-style: bold;
+    background: $background-color-nofocus;
+}
+
+FooterKey {
+    background: $background-color-nofocus;
+    color: $border-title-color-nofocus;
+}
+
+FooterKey > .footer-key--key {
+    background: $background-color-nofocus;
+    color: $border-color-focus;
+}
+
+Footer {
+    background: $background-color-nofocus;
+    color: $border-title-color-nofocus;
+}
 
 Input {
     border: round $border-color-nofocus;
-    background: transparent;
+    background: $background-color-nofocus;
     border-title-color: $border-color-nofocus;
     border-title-style: bold;
-    color: green;
+    color: $border-title-color-nofocus;
 }
-
 
 Input > .input--placeholder {
     border: round $border-color-nofocus;
@@ -26,7 +56,6 @@ Input:focus {
     border-title-color: $border-title-color-focus;
     border-title-style: bold;
 }
-
 
 Input:focus> .input--placeholder {
     border: round $border-color-focus;
@@ -40,12 +69,11 @@ Input:focus> .input--placeholder {
     margin: 0;
     min-width: 50;
     padding: 0;
-    color: green;
-    border-title-color: $border-title-color-focus;
+    color: $border-color-nofocus;
+    border: round $border-color-nofocus;
+    border-title-color: $border-color-nofocus;
     border-title-style: bold;
 }
-
-
 
 #guing_search {
     layout: horizontal;
@@ -65,9 +93,8 @@ Input:focus> .input--placeholder {
     border: round $border-color-nofocus;
     border-title-color: green;
     border-title-style: bold;
-    height: 100%;
+    height: auto;
     color: green
-
 }
 
 #guing_table:focus{
@@ -76,14 +103,17 @@ Input:focus> .input--placeholder {
 
 #guing_table > .datatable--header {
     text-style: bold;
-    background: $background;
+    /*background: $background;*/
     /* color: $primary; */
+    background: $background;
     color: green
 }
 
 #guing_table > .datatable--cursor {
-    background: $panel;
-    color: auto;
+    /*background: $panel;*/
+    /*color: auto;*/
+    color: rgba(127, 231, 6, 1);
+    background: rgba(127, 231, 6, 0.2);
 }
 
 #guing_table:focus > .datatable--cursor {
@@ -108,6 +138,7 @@ VerticalScroll {
     border-title-style: bold;
     scrollbar-size: 0 1;
     scrollbar-color: $border-title-color-focus;
+    background: $background-color-nofocus;
 }
 
 
@@ -117,6 +148,7 @@ Container {
     border: round $border-color-focus;
     border-title-color: $border-title-color-focus;
     border-title-style: bold;
+    
 }
 
 Horizontal {
@@ -243,18 +275,7 @@ TmuxModal > Vertical > Horizontal > ListView {
     border-title-style: bold;
 }
 
-TmuxModal > Vertical > Horizontal > Button {
-    width: 80%;
-    height: auto;
-    align: center middle;
-    border: solid blue ;
-}
 
-#tmuxmodal_tmux_pane_cmd {
-    width: 20%;
-    height: auto;
-    align: center middle;
-}
 
 #tmuxmodal_horizontal_top {
     width: 100%;
@@ -276,6 +297,10 @@ TmuxModal > Vertical > Horizontal > Button {
     height: 20%;
     margin: 0;
     align: center middle;
+}
+
+#tmuxmodal_ok_bt {
+    color: $border-title-color-nofocus;
 }
 
 CmdEditModal {
