@@ -36,6 +36,6 @@ def check(cheatsheets):
                     print(
                         "{}{:<6s} : {} ({}){}".format(bcolors.GREEN, "✔ OK", binary, output.split("\n")[0],
                                                       bcolors.ENDC))
-                except subprocess.CalledProcessError as e:
+                except subprocess.CalledProcessError:
                     print("{}{:<6s} : {} (full command is : {} ){}".format(bcolors.WARNING, "✗ KO", binary,
                                                                            cheat.printable_command, bcolors.ENDC))

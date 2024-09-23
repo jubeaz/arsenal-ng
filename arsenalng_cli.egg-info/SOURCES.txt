@@ -14,12 +14,13 @@ arsenalng/__pycache__/arsenalng.cpython-312.pyc
 arsenalng/__pycache__/arsenalng_tests.cpython-312.pyc
 arsenalng/__pycache__/console.cpython-312.pyc
 arsenalng/__pycache__/logger.cpython-312.pyc
-arsenalng/data/arsenal-ng.conf
+arsenalng/data/arsenalng.conf
 arsenalng/data/config.py
 arsenalng/data/__pycache__/config.cpython-312.pyc
-arsenalng/gui/gui.tcss
-arsenalng/gui/guing.py
+arsenalng/gui/arsenalnggui.py
+arsenalng/gui/arsenalnggui.tcss
 arsenalng/gui/__pycache__/argseditmodal.cpython-312.pyc
+arsenalng/gui/__pycache__/arsenalnggui.cpython-312.pyc
 arsenalng/gui/__pycache__/guing.cpython-312.pyc
 arsenalng/gui/__pycache__/mouselessdatatable.cpython-312.pyc
 arsenalng/gui/modals/cheatpreviewmodal.py

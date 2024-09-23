@@ -1,5 +1,4 @@
 import re
-import curses
 import textwrap
 
 
@@ -27,7 +26,7 @@ class Command:
         # careful this is not the lines number in GUI
         self.nb_lines_cmd = len(cheat.command.split("\n"))
         # careful this is not the lines number in GUI
-        self.nb_lines_desc = 0 if cheat.description == '' else len(cheat.description.split('\n'))
+        self.nb_lines_desc = 0 if cheat.description == "" else len(cheat.description.split("\n"))
 
     def get_description_cut_by_size(self, size):
         """The description cut by lines inside the gui size"""

@@ -12,7 +12,7 @@ from arsenalng.models.cheat import Cheat, ArsenalRstVisitor
 
 class CheatDict:
     current_cheat = Cheat()
-    cheatsheets = {}
+    cheatsheets = dict()
 
     def new_cheat(self):
         self.current_cheat = Cheat()
@@ -97,7 +97,7 @@ class CheatDict:
         with open(filename) as fd:
             yml_text = yml_load(fd, Loader=FullLoader)
 
-            for tool_id in yml_text:
+            for tool_id in yml_text.keys():
                 self.command_tags_ref = {}
                 self.firsttitle = ""
                 self.current_tags = ""
@@ -126,7 +126,7 @@ class CheatDict:
                                 cat, value = cmd_tag.split("/", 1)
                                 self.command_tags_ref[cat] = value
 
-                    for cmd_id in tool["cmds"]:
+                    for cmd_id in tool["cmds"].keys():
                         cmd = tool["cmds"][cmd_id]
 
                         self.new_cheat()
@@ -320,6 +320,7 @@ class CheatDict:
             "rst": self.parse_restructuredtext,
             "yml": self.parse_yaml
         }
+
         paths = [paths] if isinstance(paths, str) else paths
         for path in paths:
             for file_format in file_formats:

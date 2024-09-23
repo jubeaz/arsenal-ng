@@ -20,7 +20,7 @@ class Cheat:
     command = ""
     printable_command = ""
     description = ""
-    variables = dict()
+    variables = {}
     command_capture = False
     rate = 0
 
@@ -28,7 +28,7 @@ class Cheat:
         return self.name != "" and self.command != "" and not self.command_capture
 
     def inline_cheat(self):
-        return "{}{}{}".format({self.tags}, {self.name}, {self.command})
+        return f"{({self.tags})}{({self.name})}{({self.command})}"
 
     def get_rating(self):
         # Rating
@@ -51,9 +51,9 @@ class Cheat:
 
         tag_string = ""
         if self.command_tags is not None:
-            for tag_key in self.command_tags.keys():
+            for tag_key in self.command_tags:
                 tag = tag_key + "/" + self.command_tags[tag_key]
-                if tag in tags_dict.keys():
+                if tag in tags_dict:
                     tag_string += "" + tags_dict[tag]
                 elif "cat/" in tag:
                     tag_string += " " + tag.split("cat/")[1].upper().strip()
@@ -113,7 +113,7 @@ class ArsenalRstVisitor(nodes.GenericNodeVisitor):
             if line.startswith("=") or line.startswith("$") and ":" in line:
                 varname, varval = [x.strip() for x in line[1:].split(":")]
                 if line.startswith("$"):
-                    varval = "$({0})".format(varval)
+                    varval = f"$({varval})"
                 self.cheats.filevars[varname] = varval
             elif line.endswith(":"):  # Name
                 self.cheats.current_cheat.name = line[:-1]
