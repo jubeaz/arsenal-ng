@@ -10,7 +10,7 @@ README = (HERE / "README.md").read_text()
 REQUIREMENTS = (HERE / "requirements.txt").read_text()
 
 setup(
-    name='arsenal-cli',
+    name='arsenalng-cli',
     version='0.0.1',
     packages=find_packages(),
     install_requires=REQUIREMENTS,
@@ -52,7 +52,7 @@ setup(
     package_data={'': []},
     entry_points={
         'console_scripts': [
-            'arsenalng = arsenalng.app:main',
+            'arsenalng = arsenalng.arsenalng:main',
         ],
     },
 )

@@ -8,8 +8,8 @@ class CheatPreviewModal(MouselessModal):
     w_cheat_preview = None
     cmd = None
 
-    def __init__(self, cheat, name=None, id=None, classes=None):
-        self.w_cheat_preview = Label("", id="cheatpreviewmodal_previewbox")
+    def __init__(self, cheat, name=None, id=None, classes=None):  # noqa: A002
+        self.w_cheat_preview = Label("", id="cheatpreviewmodal_cmd_preview")
         self.cmd = Command(cheat, {})
         super().__init__(name=name, id=id, classes=classes)
 

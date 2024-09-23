@@ -2,6 +2,10 @@
 
 issued from [https://github.com/Orange-Cyberdefense/arsenal](https://github.com/Orange-Cyberdefense/arsenal)
 
+# Install
+
+`pipx install .`
+
 ## TODO
 * work on options
 * Dev a MouselessVerticalScroll

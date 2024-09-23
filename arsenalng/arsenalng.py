@@ -11,7 +11,7 @@ from . import __version__
 from arsenalng.data import config
 from arsenalng.modules import check
 from arsenalng.models.cheatdict import CheatDict
-from arsenalng.gui.guing import ArsenalNGGui
+from arsenalng.gui.arsenalnggui import ArsenalNGGui
 
 
 class ArsenalNG:

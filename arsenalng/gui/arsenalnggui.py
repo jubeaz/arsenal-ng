@@ -34,7 +34,7 @@ class ArsenalNGGui(App):
         Binding(key="tab", action="cheat_preview", description="Preview", show=True),
     ]
 
-    CSS_PATH = "gui.tcss"
+    CSS_PATH = "arsenalnggui.tcss"
     AUTO_FOCUS = "Input"
     global_cheats = []  # all cheats
     filtered_cheats = []  # cheats after search
@@ -50,8 +50,8 @@ class ArsenalNGGui(App):
     tmux_modal = None
     cheat_preview_modal = None
     
-    w_cheats_dt = None
-    w_search_input = None
+    w_cheats = None
+    w_search = None
     w_cmd_preview = None
 
     focus_save = None
@@ -80,20 +80,20 @@ class ArsenalNGGui(App):
     def compose(self) -> ComposeResult:
         """Create child widgets for the app."""
         self.cursor_blink = False
-        self.w_cmd_preview = Label("", id="guing_infobox")
+        self.w_cmd_preview = Label("", id="arsenalnggui_cmd_preview")
         self.w_cmd_preview.border_title = ""
 
-        self.w_cheats_dt = MouselessDataTable(id="guing_table")
-        self.w_cheats_dt.cursor_type = "row"
-        self.w_cheats_dt.zebra_stripes = False
-        self.w_cheats_dt.border_title = "Commands"
+        self.w_cheats = MouselessDataTable(id="arsenalnggui_cheats")
+        self.w_cheats.cursor_type = "row"
+        self.w_cheats.zebra_stripes = False
+        self.w_cheats.border_title = "Commands"
         
-        self.w_search_input = Input(id="guing_search", placeholder="Search", type="text")
-        self.w_search_input.border_title = "Search"
+        self.w_search = Input(id="guing_search", placeholder="Search", type="text")
+        self.w_search.border_title = "Search"
         with Container():
             yield self.w_cmd_preview
-            yield self.w_search_input
-            yield self.w_cheats_dt
+            yield self.w_search
+            yield self.w_cheats
         yield Footer()
 
     def on_mount(self) -> None:
@@ -104,9 +104,9 @@ class ArsenalNGGui(App):
         self.col1_size = math.floor(max_width * 8 / 100)
         self.col3_size = math.floor(max_width * 23 / 100)
         self.col4_size = math.floor(max_width * 55 / 100)
-        self.compute_w_cheats_dt()
-        self.set_focus(self.w_search_input)
-        self.focus_save = self.w_search_input
+        self.compute_w_cheats()
+        self.set_focus(self.w_search)
+        self.focus_save = self.w_search
 
     def on_click(self, event: events.Click) -> None:
         """Prevent Click"""
@@ -164,24 +164,23 @@ class ArsenalNGGui(App):
         return
 
     @on(Input.Changed)
-    def recompute_w_cheats_dt(self, event: Input.Changed):
-        self.input_buffer = self.w_search_input.value
-        self.w_cheats_dt.clear(columns=True)
-        self.compute_w_cheats_dt()
+    def recompute_w_cheats(self, event: Input.Changed):
+        self.input_buffer = self.w_search.value
+        self.w_cheats.clear(columns=True)
+        self.compute_w_cheats()
 
  
     def on_key(self, event: events.Key) -> None:
         # https://github.com/Textualize/textual/blob/main/src/textual/keys.py
         if event.key == "enter": # need here because enter catched by search input
-            self.cmd_edit_modal = CmdEditModal(self.filtered_cheats[self.w_cheats_dt.cursor_row], self.arsenalng_global_vars)
+            self.cmd_edit_modal = CmdEditModal(self.filtered_cheats[self.w_cheats.cursor_row], self.arsenalng_global_vars)
             self.push_screen(self.cmd_edit_modal, self.arg_edit_callback)
         elif event.key == "tab":
-            self.cheat_preveiw_modal = CheatPreviewModal(self.filtered_cheats[self.w_cheats_dt.cursor_row])
+            self.cheat_preveiw_modal = CheatPreviewModal(self.filtered_cheats[self.w_cheats.cursor_row])
             self.push_screen(self.cheat_preveiw_modal)
 
     def action_quit(self):
             self.exit()      
-
 
     def action_edit_global_vars(self):
         self.global_vars_modal = GlobalVarsEditModal(self.arsenalng_global_vars)
@@ -204,44 +203,44 @@ class ArsenalNGGui(App):
         self.arsenalng_global_vars = {}
 
     def action_next(self):
-        r = self.w_cheats_dt.cursor_row
-        self.w_cheats_dt.move_cursor(row=r + 1)
-        self.w_cmd_preview.update(f"{self.filtered_cheats[self.w_cheats_dt.cursor_row].printable_command}")
-        self.w_cmd_preview.border_title = f"{self.filtered_cheats[self.w_cheats_dt.cursor_row].name}"
+        r = self.w_cheats.cursor_row
+        self.w_cheats.move_cursor(row=r + 1)
+        self.w_cmd_preview.update(f"{self.filtered_cheats[self.w_cheats.cursor_row].printable_command}")
+        self.w_cmd_preview.border_title = f"{self.filtered_cheats[self.w_cheats.cursor_row].name}"
 
     def action_prev(self):
-        r = self.w_cheats_dt.cursor_row
-        self.w_cheats_dt.move_cursor(row=r - 1)
-        self.w_cmd_preview.update(f"{self.filtered_cheats[self.w_cheats_dt.cursor_row].printable_command}")
-        self.w_cmd_preview.border_title = f"{self.filtered_cheats[self.w_cheats_dt.cursor_row].name}"
+        r = self.w_cheats.cursor_row
+        self.w_cheats.move_cursor(row=r - 1)
+        self.w_cmd_preview.update(f"{self.filtered_cheats[self.w_cheats.cursor_row].printable_command}")
+        self.w_cmd_preview.border_title = f"{self.filtered_cheats[self.w_cheats.cursor_row].name}"
 
     def action_page_up(self):
-        self.w_cheats_dt.action_page_up()
-        self.w_cmd_preview.update(f"{self.filtered_cheats[self.w_cheats_dt.cursor_row].printable_command}")
-        self.w_cmd_preview.border_title = f"{self.filtered_cheats[self.w_cheats_dt.cursor_row].name}"
+        self.w_cheats.action_page_up()
+        self.w_cmd_preview.update(f"{self.filtered_cheats[self.w_cheats.cursor_row].printable_command}")
+        self.w_cmd_preview.border_title = f"{self.filtered_cheats[self.w_cheats.cursor_row].name}"
 
     def action_page_down(self):
-        self.w_cheats_dt.action_page_down()
-        self.w_cmd_preview.update(f"{self.filtered_cheats[self.w_cheats_dt.cursor_row].printable_command}")
-        self.w_cmd_preview.border_title = f"{self.filtered_cheats[self.w_cheats_dt.cursor_row].name}"
+        self.w_cheats.action_page_down()
+        self.w_cmd_preview.update(f"{self.filtered_cheats[self.w_cheats.cursor_row].printable_command}")
+        self.w_cmd_preview.border_title = f"{self.filtered_cheats[self.w_cheats.cursor_row].name}"
 
     def action_cheat_edit(self):
-        self.cmd_edit_modal = CmdEditModal(self.filtered_cheats[self.w_cheats_dt.cursor_row], self.arsenalng_global_vars)
+        self.cmd_edit_modal = CmdEditModal(self.filtered_cheats[self.w_cheats.cursor_row], self.arsenalng_global_vars)
         self.push_screen(self.cmd_edit_modal, self.arg_edit_callback)
 
     def action_cheat_preview(self):
-        self.cheat_preveiw_modal = CheatPreviewModal(self.filtered_cheats[self.w_cheats_dt.cursor_row])
+        self.cheat_preveiw_modal = CheatPreviewModal(self.filtered_cheats[self.w_cheats.cursor_row])
         self.push_screen(self.cheat_preveiw_modal)
 
-    def compute_w_cheats_dt(self):
+    def compute_w_cheats(self):
         self.filtered_cheats = self.filter_cheats()
-        self.w_cheats_dt.add_column("tags", width=self.col1_size)
-        self.w_cheats_dt.add_column("title", width=self.col2_size)
-        self.w_cheats_dt.add_column("name", width=self.col3_size)
-        self.w_cheats_dt.add_column("command", width=self.col4_size)
+        self.w_cheats.add_column("tags", width=self.col1_size)
+        self.w_cheats.add_column("title", width=self.col2_size)
+        self.w_cheats.add_column("name", width=self.col3_size)
+        self.w_cheats.add_column("command", width=self.col4_size)
         for i, cheat in enumerate(self.filtered_cheats):
             tags = cheat.get_tags()
-            self.w_cheats_dt.add_row(tags, cheat.str_title, cheat.name, cheat.printable_command, key=i)
+            self.w_cheats.add_row(tags, cheat.str_title, cheat.name, cheat.printable_command, key=i)
 
     def filter_cheats(self):
         """

@@ -12,25 +12,25 @@ from arsenalng.gui.modals.mouselessmodal import MouselessModal
 
 class CmdEditModal(MouselessModal):
     cmd = None
-    infobox = None
+    w_infobox = None
     focus_save = None
 
-    def __init__(self, cheat, arsenalng_global_vars, name=None, id=None, classes=None):
-        self.infobox = Label("", id="cmdeditModal_infobox")
-        self.infobox.border_title = "Command"
+    def __init__(self, cheat, arsenalng_global_vars, name=None, id=None, classes=None):  # noqa: A002
+        self.w_cmd_preview = Label("", id="cmdeditModal_cmd_preview")
+        self.w_cmd_preview.border_title = "Command"
         self.inputs = {}
         self.cmd = Command(cheat, arsenalng_global_vars)
         super().__init__(name=name, id=id, classes=classes)
 
     def compose(self):
         with Container():
-            yield self.infobox
+            yield self.w_cmd_preview
             with VerticalScroll():
                 for arg_name, arg_data in self.cmd.args.items():
                     self.inputs[arg_name] = Input(id=arg_name, placeholder="", type="text", value=arg_data["value"])
                     yield self.inputs[arg_name]
                     self.inputs[arg_name].border_title = arg_name
-        self.infobox.update(self.cmd.preview())
+        self.w_cmd_preview.update(self.cmd.preview())
 
     def on_mount(self) -> None:
         if len(self.inputs):
@@ -42,7 +42,7 @@ class CmdEditModal(MouselessModal):
         for name, i in self.inputs.items():
             value = i.value if i.value is not None else ""
             self.cmd.set_arg(name, value)
-        self.infobox.update(self.cmd.preview())
+        self.w_cmd_preview.update(self.cmd.preview())
 
     def on_key(self, event: events.Key) -> None:
         event.stop()
@@ -55,11 +55,11 @@ class CmdEditModal(MouselessModal):
                     self.focused.action_end()
             elif event.key == "down":
                 self.focus_next()
-                if self.focused == self.infobox:
+                if self.focused == self.w_cmd_preview:
                     self.focus_next()
             elif event.key == "shift+tab" or event.key == "up":
                 self.focus_previous()
-                if self.focused == self.infobox:
+                if self.focused == self.w_cmd_preview:
                     self.focus_previous()
             self.focus_save = self.focused
             self.query_one(VerticalScroll).scroll_to_widget(self.focused)

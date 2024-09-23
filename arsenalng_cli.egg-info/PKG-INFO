@@ -1,0 +1,56 @@
+Metadata-Version: 2.1
+Name: arsenalng-cli
+Version: 0.0.1
+Summary: Arsenal-NG is just a quick inventory, reminder and launcher for pentest commands. 
+Home-page: https://github.com/jubeaz/arsenal-ng
+Author: Jubeaz
+Author-email: 
+License: GPL-3.0
+Keywords: security,pen testing,cli,tools,tmux
+Classifier: Environment :: Console
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: System Administrators
+Classifier: Intended Audience :: Information Technology
+Classifier: License :: OSI Approved :: GNU General Public License v3 (GPLv3)
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Topic :: Security
+Classifier: Topic :: System :: Systems Administration
+Classifier: Topic :: Utilities
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: libtmux
+Requires-Dist: docutils
+Requires-Dist: pyperclip
+Requires-Dist: pyyaml
+Requires-Dist: pyfzf
+Requires-Dist: textual
+Requires-Dist: rich
+
+# arsenal-ng
+
+issued from [https://github.com/Orange-Cyberdefense/arsenal](https://github.com/Orange-Cyberdefense/arsenal)
+
+## TODO
+* work on options
+* Dev a MouselessVerticalScroll
+* guing
+  * if command has no vars don't launch CmdEditModal
+* Tmux
+  * There might exist a bug since two windows can have the same name and the use of `select_window` might return the wrong one.
+* Global vars edition:
+  * add the possibility to create a global var
+
+
+
+
+# CSS
+## green monochrome
+

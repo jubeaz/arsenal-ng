@@ -1,0 +1,5 @@
+include LICENSE README.md requirements.txt run
+include *.py
+recursive-include arsenalng *
+
+

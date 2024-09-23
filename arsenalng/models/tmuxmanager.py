@@ -76,7 +76,6 @@ class TmuxManager:
         self.is_new_window = False
         if name != "<new_window>":
             try:
-                indx = int(name.split(":", 1)[0])
                 search_name = name.split(":", 1)[1]
                 self.window = self.session.select_window(search_name)
             except libtmux.exc.LibTmuxException:

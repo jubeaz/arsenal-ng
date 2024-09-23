@@ -1,5 +1,5 @@
-from textual.widgets import Input, Label
-from textual.containers import Horizontal, VerticalScroll
+from textual.widgets import Input
+from textual.containers import VerticalScroll
 from textual import events, on
 
 from arsenalng.gui.modals.mouselessmodal import MouselessModal
@@ -9,7 +9,7 @@ class GlobalVarsEditModal(MouselessModal):
     focus_save = None
     global_vars = None
 
-    def __init__(self, global_vars, name=None, id=None, classes=None):
+    def __init__(self, global_vars, name=None, id=None, classes=None):  # noqa: A002
         self.inputs = {}
         self.global_vars = global_vars
         super().__init__(name=name, id=id, classes=classes)
@@ -35,12 +35,8 @@ class GlobalVarsEditModal(MouselessModal):
         if event.key in ["tab", "down", "shift+tab", "up"]:
             if event.key == "tab" or  event.key == "down":
                 self.focus_next()
-                #if self.focused == self.infobox:
-                #    self.focus_next()
             elif event.key == "shift+tab" or event.key == "up":
                 self.focus_previous()
-                #if self.focused == self.infobox:
-                #    self.focus_previous()
             self.focus_save = self.focused
             self.query_one(VerticalScroll).scroll_to_widget(self.focused)
         elif event.key == "left":

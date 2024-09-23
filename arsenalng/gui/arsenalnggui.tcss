@@ -3,7 +3,8 @@ $dark_green: rgba(0, 128, 0, 0.1)
 
 $base-color: green;
 $base-background: green;
-$dark-background: rgb(16, 25, 9);
+/* $dark-background: rgb(16, 25, 9); */
+$dark-background: rgba(0, 128, 0, 0.1);
 $highlighted-color: rgba(127, 231, 6, 1);
 $highlighted-background: rgba(127, 231, 6, 0.2);
 
@@ -31,8 +32,6 @@ $border-title-color-nofocus: green;
 
 $border-color-nofocus: green;
 $border-color-focus: $highlighted-color;
-
-
 
 
 
@@ -184,14 +183,14 @@ Input > .input--placeholder {
 /**************************************************/
 
 Screen > Container {
-    height: 95%;
+    height: 100%;
     border: round $border-color-focus;
     border-title-color: $border-title-color-focus;
     border-title-style: bold;
     background: $background-color-nofocus;
 }
 
-#guing_infobox {
+#arsenalnggui_cmd_preview {
     width: 100%;
     height: 4;
     min-width: 50;
@@ -202,7 +201,7 @@ Screen > Container {
 }
 
 
-#guing_table  {
+#arsenalnggui_cheats  {
     width: 100%;
     scrollbar-size: 0 1;
     scrollbar-color: $border-title-color-nofocus;
@@ -213,33 +212,33 @@ Screen > Container {
     color: $base-color
 }
 
-#guing_table:focus{
+#arsenalnggui_cheats:focus{
     border: round $border-color-focus;
 }
 
-#guing_table > .datatable--header {
+#arsenalnggui_cheats > .datatable--header {
     text-style: bold;
-    background: $background;
+    background: $dark-background;
     color: green
 }
 
-#guing_table > .datatable--cursor {
+#arsenalnggui_cheats > .datatable--cursor {
     background: $highlighted-background;
     color: $highlighted-color;
 }
 
-#guing_table:focus > .datatable--cursor {
+#arsenalnggui_cheats:focus > .datatable--cursor {
     background: $highlighted-background;
     color: $highlighted-color;
 }
 
-#guing_table > .datatable--header-hover {
+#arsenalnggui_cheats > .datatable--header-hover {
     text-style: bold;
-    background: $background;
+    background: $dark-background;
     color: $primary;
 }
 
-#guing_table > .datatable--hover {
+#arsenalnggui_cheats > .datatable--hover {
     color: $text;
     background: $boost;
 }
@@ -284,7 +283,7 @@ CheatPreviewModal {
     align: center middle;
 }
 
-#cheatpreviewmodal_previewbox {
+#cheatpreviewmodal_cmd_preview {
     layout: horizontal;
     width: 70%;
     height: 25%;
@@ -360,7 +359,7 @@ TmuxModal > Vertical > Horizontal > ListView {
     margin: 0;
 }
 
-#tmuxmodal_pane_li {
+#tmuxmodal_pane {
     width: 20%;
     height: 100%;
     margin: 0;
@@ -384,7 +383,7 @@ CmdEditModal > Container > VerticalScroll {
     height: 80%;
 }
 
-#cmdeditModal_infobox {
+#cmdeditModal_cmd_preview {
     width: 100%;
     height: 4;
     min-width: 50;

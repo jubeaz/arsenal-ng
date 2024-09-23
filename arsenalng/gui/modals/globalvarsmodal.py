@@ -7,7 +7,7 @@ from arsenalng.gui.modals.mouselessmodal import MouselessModal
 class GlobalVarsModal(MouselessModal):
     w_global_vars = None
 
-    def __init__(self, arsenalng_global_vars, name=None, id=None, classes=None):
+    def __init__(self, arsenalng_global_vars, name=None, id=None, classes=None):  # noqa: A002
         self.w_global_vars = Pretty(arsenalng_global_vars)
         super().__init__(name=name, id=id, classes=classes)
 
