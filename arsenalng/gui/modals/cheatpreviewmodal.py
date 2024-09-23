@@ -1,4 +1,4 @@
-from textual.widgets import TextArea
+from textual.widgets import Label
 from textual import events
 
 from arsenalng.models.command import Command
@@ -9,15 +9,13 @@ class CheatPreviewModal(MouselessModal):
     cmd = None
 
     def __init__(self, cheat, name=None, id=None, classes=None):
-        self.w_cheat_preview = TextArea.code_editor(id="cheatpreviewmodal_previewbox", text="")
-        self.w_cheat_preview.cursor_blink = False
-        self.w_cheat_preview.read_only = True
+        self.w_cheat_preview = Label("", id="cheatpreviewmodal_previewbox")
         self.cmd = Command(cheat, {})
         super().__init__(name=name, id=id, classes=classes)
 
     def compose(self):
         yield self.w_cheat_preview
-        self.w_cheat_preview.load_text(f"{self.cmd.description}\n-----\n{self.cmd.preview()}")    
+        self.w_cheat_preview.update(f"{self.cmd.description}\n-----\n{self.cmd.preview()}")    
 
     def on_mount(self) -> None:
         self.set_focus(self.w_cheat_preview)

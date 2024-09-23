@@ -18,11 +18,25 @@ class TmuxManager:
     def __init__(self, server):
         self.server = server
         assert self.server.is_alive()
+        self.empty_selection()
+
+    def empty_selection(self):
         self.session = None
         self.session_name = ""
         self.window = None
         self.window_name = ""
         self.is_new_window = False
+        self.pane = None
+        self.pane_indx = ""
+
+    def unset_window(self):
+        self.window = None
+        self.window_name = ""
+        self.is_new_window = False
+        self.pane = None
+        self.pane_indx = ""
+
+    def unset_pane(self):
         self.pane = None
         self.pane_indx = ""
 
@@ -97,3 +111,4 @@ class TmuxManager:
     
     def is_finalizable(self):
         return self.session_name != "" and self.window_name != "" and self.pane_indx != "" 
+

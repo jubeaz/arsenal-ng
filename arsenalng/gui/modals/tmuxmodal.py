@@ -15,7 +15,6 @@ class TmuxModal(MouselessModal):
     w_session_li = None
     w_window_li = None
     w_pane_li = None
-    w_ok_bt = None
     focus_save = None
 
     def __init__(self, arsenalng_global_vars, tmux_mgr, name=None, id=None, classes=None):
@@ -24,21 +23,17 @@ class TmuxModal(MouselessModal):
         super().__init__(name=name, id=id, classes=classes)
 
     def compose(self):
-        self.w_ok_bt = Button("Ok")
         with Vertical( ):
             with Horizontal(id="tmuxmodal_horizontal_top"):
                 yield Label("",id="tmuxmodal_session_chosen")
                 yield Label("",id="tmuxmodal_window_chosen")
                 yield Label("",id="tmuxmodal_pane_chosen")
                 #yield self.w_pane_in
-            with Horizontal(id="tmuxmodal_horizontal_middle"):
+            with Horizontal(id="tmuxmodal_horizontal_bottom"):
                 yield MouselessListView(id="tmuxmodal_session_li")
                 yield MouselessListView(id="tmuxmodal_window_li")
                 yield MouselessListView(id="tmuxmodal_pane_li")
                 #yield self.w_pane_in
-
-            yield self.w_ok_bt
-
 
     def on_mount(self) -> None:
         self.w_session_li = self.query_one("#tmuxmodal_session_li")
@@ -54,24 +49,10 @@ class TmuxModal(MouselessModal):
         event.stop()
         if event.key == "escape":
             self.dismiss()
-        elif self.focused == self.w_session_li or self.focused == self.w_window_li or self.focused == self.w_pane_li:
-            self.listview_on_key(event)
-        elif self.focused == self.w_ok_bt:
-            self.button_on_key(event)
-
-    def button_on_key(self, event: events.Key) -> None:
-        if event.key == "right" or event.key == "tab":
-            self.focus_next()
-            self.focus_save = self.focused
-        elif event.key == "left" or event.key == "shift+tab":
-            self.focus_previous()
-            self.focus_save = self.focused
         elif event.key == "enter" and self.tmux_mgr.is_finalizable():
-            self.tmux_mgr.finalize()
-            self.dismiss(self.tmux_mgr)
-
-    def listview_on_key(self, event: events.Key) -> None:
-        if event.key == "enter":
+                self.tmux_mgr.finalize()
+                self.dismiss(self.tmux_mgr)
+        elif event.key == "space":
             self.focused.action_select_cursor()
         elif event.key == "right" or event.key == "tab":
             self.focus_next()
@@ -112,6 +93,7 @@ class TmuxModal(MouselessModal):
             self.build_windows()
         else:
             self.set_focus(self.w_session_li)
+            self.tmux_mgr.empty_selection()
 
     def build_windows(self):
         windows = self.tmux_mgr.get_windows()
@@ -122,7 +104,7 @@ class TmuxModal(MouselessModal):
             self.build_panes()
         else:
             self.set_focus(self.w_window_li)
-
+            self.tmux_mgr.unset_window()
 
     def build_panes(self):
         panes = self.tmux_mgr.get_panes()
@@ -130,6 +112,7 @@ class TmuxModal(MouselessModal):
             self.w_pane_li.append(MouselessLabelItem(p))
         if str(self.tmux_mgr.pane_indx) != "" and str(self.tmux_mgr.pane_indx) in panes:
             self.query_one("#tmuxmodal_pane_chosen",Label).update(str(self.tmux_mgr.pane_indx))
-            self.set_focus(self.w_ok_bt)
+            self.set_focus(self.w_session_li)
         else:
             self.set_focus(self.w_pane_li)
+            self.tmux_mgr.unset_pane()

@@ -1,26 +1,100 @@
 $border: wide green;
-
-/*$border-color-nofocus: $panel;*/
-/*$border-title-color-nofocus: green;*/
-/*$border-color-focus: green;*/
-/*$border-title-color-focus: green;*/
-
-/*$background-color-nofocus: rgb(41, 63, 22)*/
-$background-color-nofocus: rgb(16, 25, 9)
 $dark_green: rgba(0, 128, 0, 0.1)
-$border-color-nofocus: green;
+
+$base-color: green;
+$base-background: green;
+$dark-background: rgb(16, 25, 9);
+$highlighted-color: rgba(127, 231, 6, 1);
+$highlighted-background: rgba(127, 231, 6, 0.2);
+
+$color-nofocus: $base-color;
+$color-focus: $highlighted-color;
+
+$background-color-nofocus: $base-color;
+$background-color-focus: $highlighted-background;
+
+
+$header-color-nofocus: $base-color;
+$header-color-focus: $base-color;
+
+$scrollbar-color-color-nofocus: $base-color;
+$scrollbar-color-color-focus: $highlighted-color;
+
+$placeholder-color-nofocus: $base-color;
+$placeholder-color-focus: $base-color;
+
+$background-color-nofocus: rgb(16, 25, 9);
+$background-color-focus: rgb(16, 25, 9);
+
+$border-title-color-focus: $highlighted-color;
 $border-title-color-nofocus: green;
 
-$border-color-focus: rgba(127, 231, 6, 1);
-$border-title-color-focus: rgba(127, 231, 6, 1);
+$border-color-nofocus: green;
+$border-color-focus: $highlighted-color;
 
 
-Screen > Container {
-    height: 95%;
+
+
+
+Container {
+    background: transparent;
+    border: round $border-color-nofocus;
+    border-title-color: $border-title-color-nofocus;
+    border-title-style: bold;
+}
+
+Container:focus {
+    background: transparent;
     border: round $border-color-focus;
     border-title-color: $border-title-color-focus;
     border-title-style: bold;
-    background: $background-color-nofocus;
+}
+
+Horizontal {
+    background: transparent;
+    border: round $border-color-nofocus;
+    border-title-color: $border-title-color-nofocus;
+    border-title-style: bold;
+}
+
+Horizontal:focus {
+    background: transparent;
+    border: round $border-color-focus;
+    border-title-color: $border-title-color-focus;
+    border-title-style: bold;
+}
+
+Vertical {
+    background: transparent;
+    border: round $border-color-focus;
+    border-title-color: $border-title-color-focus;
+    border-title-style: bold;
+}
+
+Vertical:focus {
+    background: transparent;
+    border: round $border-color-focus;
+    border-title-color: $border-title-color-focus;
+    border-title-style: bold;
+}
+
+
+VerticalScroll {
+    background: transparent;
+    border: round $border-color-nofocus;
+    border-title-color: $border-title-color-nofocus;
+    border-title-style: bold;
+    scrollbar-size: 0 1;
+    scrollbar-color: $border-title-color-nofocus;
+}
+
+VerticalScroll:focus {
+    background: transparent;
+    border: round $border-color-focus;
+    border-title-color: $border-title-color-focus;
+    border-title-style: bold;
+    scrollbar-size: 0 1;
+    scrollbar-color: $border-title-color-focus;
 }
 
 FooterKey {
@@ -38,63 +112,105 @@ Footer {
     color: $border-title-color-nofocus;
 }
 
-Input {
-    border: round $border-color-nofocus;
-    background: $background-color-nofocus;
-    border-title-color: $border-color-nofocus;
+
+Label {
+    color: $color-nofocus;
+}
+
+
+ListView {
+    border: round $border-color-focus;
+    border-title-color: $border-title-color-nofocus;
     border-title-style: bold;
+}
+
+ListView > ListItem.--highlight{
+    background: $background-color-nofocus;
     color: $border-title-color-nofocus;
 }
 
-Input > .input--placeholder {
+
+ListView:focus {
+    border: round $border-color-focus;
+    border-title-color: $border-title-color-focus;
+    border-title-style: bold;
+}
+
+ListView:focus > ListItem.--highlight {
+    background: $highlighted-background;
+    color: $highlighted-color;
+}
+
+ListItem {
+    background: $background-color-nofocus;
+    color: $border-title-color-nofocus;
+}
+
+Input {
+    color: $base-color;
+    background: $background-color-nofocus;
     border: round $border-color-nofocus;
-    background: transparent;
+    border-title-color: $border-title-color-nofocus;
+    border-title-style: bold;
+    layout: horizontal;
+    align: left middle;
+    width: 100%;
+    height: 3;
+    margin: 0;
+    min-width: 50;
+    padding: 0;
 }
 
 Input:focus {
+    color: $color-focus;
+    background: $highlighted-background;
     border: round $border-color-focus;
     border-title-color: $border-title-color-focus;
     border-title-style: bold;
 }
 
 Input:focus> .input--placeholder {
-    border: round $border-color-focus;
-    color: green;
+    color: $placeholder-color-nofocus;
 }
 
+Input > .input--placeholder {
+    color: $placeholder-color-focus;
+}
+
+
+
+/**************************************************/
+/**                ArsenalNGGui                   */
+/**************************************************/
+
+Screen > Container {
+    height: 95%;
+    border: round $border-color-focus;
+    border-title-color: $border-title-color-focus;
+    border-title-style: bold;
+    background: $background-color-nofocus;
+}
 
 #guing_infobox {
-    layout: horizontal;
+    width: 100%;
     height: 4;
-    margin: 0;
     min-width: 50;
-    padding: 0;
-    color: $border-color-nofocus;
     border: round $border-color-nofocus;
-    border-title-color: $border-color-nofocus;
+    border-title-color: $border-title-color-nofocus;
     border-title-style: bold;
+    background: $background-color-nofocus;
 }
 
-#guing_search {
-    layout: horizontal;
-    /*background: $boost;*/
-    height: 3;
-    margin: 0;
-    min-width: 50;
-    padding: 0;
-    /*border: ascii $accent;*/ 
-    color: green;
-}
 
 #guing_table  {
     width: 100%;
     scrollbar-size: 0 1;
-    scrollbar-color: $border-title-color-focus;
+    scrollbar-color: $border-title-color-nofocus;
     border: round $border-color-nofocus;
     border-title-color: green;
     border-title-style: bold;
     height: auto;
-    color: green
+    color: $base-color
 }
 
 #guing_table:focus{
@@ -103,21 +219,18 @@ Input:focus> .input--placeholder {
 
 #guing_table > .datatable--header {
     text-style: bold;
-    /*background: $background;*/
-    /* color: $primary; */
     background: $background;
     color: green
 }
 
 #guing_table > .datatable--cursor {
-    /*background: $panel;*/
-    /*color: auto;*/
-    color: rgba(127, 231, 6, 1);
-    background: rgba(127, 231, 6, 0.2);
+    background: $highlighted-background;
+    color: $highlighted-color;
 }
 
 #guing_table:focus > .datatable--cursor {
-    background: $secondary;
+    background: $highlighted-background;
+    color: $highlighted-color;
 }
 
 #guing_table > .datatable--header-hover {
@@ -131,48 +244,27 @@ Input:focus> .input--placeholder {
     background: $boost;
 }
 
-
-VerticalScroll {
-    border: round $border-color-focus;
-    border-title-color: $border-title-color-focus;
-    border-title-style: bold;
-    scrollbar-size: 0 1;
-    scrollbar-color: $border-title-color-focus;
-    background: $background-color-nofocus;
-}
-
-
-Container {
-    height: 70%;
-    background: transparent;
-    border: round $border-color-focus;
-    border-title-color: $border-title-color-focus;
-    border-title-style: bold;
-    
-}
-
-Horizontal {
-    width: 70%;
-    height: 25%;
-    background: transparent;
-    border: round $border-color-focus;
-    border-title-color: $border-title-color-focus;
-    border-title-style: bold;
-}
-
-Vertical {
-    width: 70%;
-    height: 25%;
-    background: transparent;
-    border: round $border-color-focus;
-    border-title-color: $border-title-color-focus;
-    border-title-style: bold;
-}
-
+/**************************************************/
+/**                GlobalVarsModal                */
+/**************************************************/
 
 GlobalVarsModal {
     align: center middle;
 }
+
+GlobalVarsModal > Container {
+    align: center middle;
+    width: 70%;
+    height: 70%;
+}
+
+GlobalVarsModal > Container > Pretty{
+    align: center middle;
+}
+
+/**************************************************/
+/**                GlobalVarsEditModal            */
+/**************************************************/
 
 GlobalVarsEditModal {
     align: center middle;
@@ -183,29 +275,32 @@ GlobalVarsEditModal > VerticalScroll  {
     height: 70%;
 }
 
-GlobalVarsEditModal > VerticalScroll > Input {
-    align: left middle;
-    width: auto;
-    min-width: 50;
-    height: 3;
-    margin: 0;
-    padding: 0 0;
-}
+/**************************************************/
+/**                CheatPreviewModal              */
+/**************************************************/
+
 
 CheatPreviewModal {
     align: center middle;
 }
 
-#previewbox {
+#cheatpreviewmodal_previewbox {
     layout: horizontal;
-    /*background: $boost;*/
     width: 70%;
     height: 25%;
     margin: 0;
     min-width: 50;
     padding: 0;
-    border: ascii $accent;
+    border: round $border-color-nofocus;
+    border-title-color: $border-title-color-nofocus;
+    border-title-style: bold;
+    background: $background-color-nofocus;
 }
+
+/**************************************************/
+/**                TmuxModal                      */
+/**************************************************/
+
 
 TmuxModal {
     align: center middle;
@@ -219,18 +314,19 @@ TmuxModal > Vertical {
 }
 
 TmuxModal > Vertical > Horizontal{
-    width: 100%;
-    height: 50%;
     margin: 0;
     align: center middle;
-    border: blank
 }
 
-TmuxModal > Vertical > Horizontal > Input {
-    width: 20%;
-    height: auto;
-    border: solid red ;
-    margin: 0;
+#tmuxmodal_horizontal_top {
+    width: 100%;
+    height: 20%;
+}
+
+#tmuxmodal_horizontal_bottom {
+    width: 100%;
+    height: 80%;
+    border: blank;
 }
 
 #tmuxmodal_session_chosen {
@@ -257,71 +353,43 @@ TmuxModal > Vertical > Horizontal > Input {
     margin: 0;
 }
 
+
 TmuxModal > Vertical > Horizontal > ListView {
     width: 40%;
     height: 100%;
     margin: 0;
-    border: round $border-color-focus;
-    border-title-color: $border-title-color-focus;
-    border-title-style: bold;
 }
 
 #tmuxmodal_pane_li {
     width: 20%;
     height: 100%;
     margin: 0;
-    border: round $border-color-focus;
-    border-title-color: $border-title-color-focus;
-    border-title-style: bold;
 }
 
-
-
-#tmuxmodal_horizontal_top {
-    width: 100%;
-    height: 20%;
-    margin: 0;
-    align: center middle;
-}
-
-
-#tmuxmodal_horizontal_middle {
-    width: 100%;
-    height: 60%;
-    margin: 0;
-    align: center middle;
-}
-
-#tmuxmodal_horizontal_bottom {
-    width: 100%;
-    height: 20%;
-    margin: 0;
-    align: center middle;
-}
-
-#tmuxmodal_ok_bt {
-    color: $border-title-color-nofocus;
-}
+/**************************************************/
+/**                CmdEditModal                   */
+/**************************************************/
 
 CmdEditModal {
     align: center middle;
 }
 
 CmdEditModal > Container  {
-    width: 70%;
-    height: 70%;
+    width: 50%;
+    height: 50%;
 }
 
 CmdEditModal > Container > VerticalScroll {
     width: 100%;
-    height: auto;
+    height: 80%;
 }
 
-CmdEditModal > Container > VerticalScroll > Input {
-    layout: horizontal;
+#cmdeditModal_infobox {
     width: 100%;
-    height: 3;
-    margin: 0;
+    height: 4;
     min-width: 50;
-    padding: 0;
+    border: round $border-color-nofocus;
+    border-title-color: $border-title-color-nofocus;
+    border-title-style: bold;
+    background: $background-color-nofocus;
 }

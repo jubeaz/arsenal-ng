@@ -1,4 +1,4 @@
-from textual.widgets import Input, TextArea
+from textual.widgets import Input, Label
 from textual.containers import Container, VerticalScroll
 from textual import events, on
 import glob
@@ -16,9 +16,8 @@ class CmdEditModal(MouselessModal):
     focus_save = None
 
     def __init__(self, cheat, arsenalng_global_vars, name=None, id=None, classes=None):
-        self.infobox = TextArea.code_editor(id="cmdeditModal_infobox", text="")
-        self.infobox.cursor_blink = False
-        self.infobox.read_only = True
+        self.infobox = Label("", id="cmdeditModal_infobox")
+        self.infobox.border_title = "Command"
         self.inputs = {}
         self.cmd = Command(cheat, arsenalng_global_vars)
         super().__init__(name=name, id=id, classes=classes)
@@ -31,7 +30,7 @@ class CmdEditModal(MouselessModal):
                     self.inputs[arg_name] = Input(id=arg_name, placeholder="", type="text", value=arg_data["value"])
                     yield self.inputs[arg_name]
                     self.inputs[arg_name].border_title = arg_name
-        self.infobox.load_text(self.cmd.preview())
+        self.infobox.update(self.cmd.preview())
 
     def on_mount(self) -> None:
         if len(self.inputs):
@@ -43,7 +42,7 @@ class CmdEditModal(MouselessModal):
         for name, i in self.inputs.items():
             value = i.value if i.value is not None else ""
             self.cmd.set_arg(name, value)
-        self.infobox.load_text(self.cmd.preview())
+        self.infobox.update(self.cmd.preview())
 
     def on_key(self, event: events.Key) -> None:
         event.stop()

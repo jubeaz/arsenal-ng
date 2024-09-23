@@ -1,5 +1,5 @@
 from textual.app import App, ComposeResult
-from textual.widgets import Label, Input, TextArea, Footer
+from textual.widgets import Label, Input, Footer
 from textual.binding import Binding
 from textual.containers import Container
 from textual import events, on
@@ -80,11 +80,8 @@ class ArsenalNGGui(App):
     def compose(self) -> ComposeResult:
         """Create child widgets for the app."""
         self.cursor_blink = False
-
-        self.w_cmd_preview = TextArea.code_editor(id="guing_infobox", text="")
-        self.w_cmd_preview.cursor_blink = False
-        self.w_cmd_preview.read_only = True
-        self.w_cmd_preview.border_title = "Preview"
+        self.w_cmd_preview = Label("", id="guing_infobox")
+        self.w_cmd_preview.border_title = ""
 
         self.w_cheats_dt = MouselessDataTable(id="guing_table")
         self.w_cheats_dt.cursor_type = "row"
@@ -209,20 +206,24 @@ class ArsenalNGGui(App):
     def action_next(self):
         r = self.w_cheats_dt.cursor_row
         self.w_cheats_dt.move_cursor(row=r + 1)
-        self.w_cmd_preview.load_text(f"{self.filtered_cheats[self.w_cheats_dt.cursor_row].name} \n {self.filtered_cheats[self.w_cheats_dt.cursor_row].printable_command}")
+        self.w_cmd_preview.update(f"{self.filtered_cheats[self.w_cheats_dt.cursor_row].printable_command}")
+        self.w_cmd_preview.border_title = f"{self.filtered_cheats[self.w_cheats_dt.cursor_row].name}"
 
     def action_prev(self):
         r = self.w_cheats_dt.cursor_row
         self.w_cheats_dt.move_cursor(row=r - 1)
-        self.w_cmd_preview.load_text(f"{self.filtered_cheats[self.w_cheats_dt.cursor_row].name} \n {self.filtered_cheats[self.w_cheats_dt.cursor_row].printable_command}")
+        self.w_cmd_preview.update(f"{self.filtered_cheats[self.w_cheats_dt.cursor_row].printable_command}")
+        self.w_cmd_preview.border_title = f"{self.filtered_cheats[self.w_cheats_dt.cursor_row].name}"
 
     def action_page_up(self):
         self.w_cheats_dt.action_page_up()
-        self.w_cmd_preview.load_text(f"{self.filtered_cheats[self.w_cheats_dt.cursor_row].name} \n {self.filtered_cheats[self.w_cheats_dt.cursor_row].printable_command}")
+        self.w_cmd_preview.update(f"{self.filtered_cheats[self.w_cheats_dt.cursor_row].printable_command}")
+        self.w_cmd_preview.border_title = f"{self.filtered_cheats[self.w_cheats_dt.cursor_row].name}"
 
     def action_page_down(self):
         self.w_cheats_dt.action_page_down()
-        self.w_cmd_preview.load_text(f"{self.filtered_cheats[self.w_cheats_dt.cursor_row].name} \n {self.filtered_cheats[self.w_cheats_dt.cursor_row].printable_command}")
+        self.w_cmd_preview.update(f"{self.filtered_cheats[self.w_cheats_dt.cursor_row].printable_command}")
+        self.w_cmd_preview.border_title = f"{self.filtered_cheats[self.w_cheats_dt.cursor_row].name}"
 
     def action_cheat_edit(self):
         self.cmd_edit_modal = CmdEditModal(self.filtered_cheats[self.w_cheats_dt.cursor_row], self.arsenalng_global_vars)
