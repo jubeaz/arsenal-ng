@@ -295,7 +295,7 @@ class ArsenalNGGui(App):
         if self.args.prefix:
             self.prefix_cmdline_with_prefix(self.cmdline)
 
-        if self.args.tmux is None:
+        if self.args.tmux is False:
             self.exit(self.cmdline)
         else:
             self.process_tmux()
