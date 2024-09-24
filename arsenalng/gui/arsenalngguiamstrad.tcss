@@ -1,11 +1,35 @@
+$border: wide green;
+$dark_green: rgba(0, 128, 0, 0.1)
+/*
+ blue, bright blue, sky blue
+dark blue: rgb(0,0,139) 
+blue : rgb(0,0,255)
+bright blue: rgb(0,150,255)
+
+yellow, bright yellow, pastel yellow
+yellow: rgb(255,255,0)
+bright yellow rgb(255,234,0)
+pastel yellow
+*/
+
+/*
 $base-color: green;
-$base-background: rgb(16, 25, 9);
+$base-background: green;
 $dark-background: rgba(0, 128, 0, 0.1);
 $highlighted-color: rgba(127, 231, 6, 1);
 $highlighted-background: rgba(127, 231, 6, 0.2);
+*/
+
+$base-color: rgb(255,215,0); /* yellow */ 
+$base-background: rgb(0,0,255); /* blue */
+$dark-background: rgb(0,0,205); /* medum blue */
+$highlighted-color: rgb(255,255,0); /* yellow */
+$highlighted-background: rgba(255,255,0, 0.6);
+
 
 $color-nofocus: $base-color;
 $color-focus: $highlighted-color;
+
 
 $background-color-nofocus: $base-background;
 $background-color-focus: $base-background;
@@ -18,6 +42,7 @@ $scrollbar-color-color-focus: $highlighted-color;
 
 $placeholder-color-nofocus: $base-color;
 $placeholder-color-focus: $base-color;
+
 
 $border-title-color-nofocus: $base-color;
 $border-title-color-focus: $highlighted-color;
@@ -115,10 +140,11 @@ ListView {
     border-title-style: bold;
 }
 
- ListView > ListItem.--highlight {
+ListView > ListItem.--highlight{
     background: $background-color-focus;
     color: $border-title-color-nofocus;
 }
+
 
 ListView:focus {
     border: round $border-color-focus;
@@ -252,6 +278,7 @@ GlobalVarsModal > Container {
 
 GlobalVarsModal > Container > Pretty{
     align: center middle;
+    color: $color-focus;
 }
 
 /**************************************************/
@@ -299,7 +326,6 @@ TmuxModal {
 }
 
 TmuxModal > Vertical {
-    background: transparent;
     align: center middle;
     height:  30%;
     width: 40%;
@@ -307,19 +333,16 @@ TmuxModal > Vertical {
 }
 
 TmuxModal > Vertical > Horizontal{
-    background: transparent;
     margin: 0;
     align: center middle;
 }
 
 #tmuxmodal_horizontal_top {
-    background: transparent;
     width: 100%;
     height: 20%;
 }
 
 #tmuxmodal_horizontal_bottom {
-    background: transparent;
     width: 100%;
     height: 80%;
     border: blank;

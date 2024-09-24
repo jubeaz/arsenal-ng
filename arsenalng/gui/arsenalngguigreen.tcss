@@ -115,10 +115,11 @@ ListView {
     border-title-style: bold;
 }
 
- ListView > ListItem.--highlight {
-    background: $background-color-focus;
+ListView > ListItem.--highlight{
+    background: $background-color-nofocus;
     color: $border-title-color-nofocus;
 }
+
 
 ListView:focus {
     border: round $border-color-focus;
