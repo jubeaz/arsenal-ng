@@ -19,6 +19,8 @@ arsenalng/data/config.py
 arsenalng/data/__pycache__/config.cpython-312.pyc
 arsenalng/gui/arsenalnggui.py
 arsenalng/gui/arsenalnggui.tcss
+arsenalng/gui/arsenalngguiamstrad.tcss
+arsenalng/gui/arsenalngguigreen.tcss
 arsenalng/gui/__pycache__/argseditmodal.cpython-312.pyc
 arsenalng/gui/__pycache__/arsenalnggui.cpython-312.pyc
 arsenalng/gui/__pycache__/guing.cpython-312.pyc

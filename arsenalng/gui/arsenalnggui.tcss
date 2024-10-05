@@ -115,7 +115,7 @@ ListView {
     border-title-style: bold;
 }
 
- ListView > ListItem.--highlight {
+ListView > ListItem.--highlight {
     background: $background-color-focus;
     color: $border-title-color-nofocus;
 }
@@ -183,7 +183,7 @@ Screen > Container {
 
 #arsenalnggui_cmd_preview {
     width: 100%;
-    height: 4;
+    height: 6;
     min-width: 50;
     border: round $border-color-nofocus;
     border-title-color: $border-title-color-nofocus;
@@ -199,7 +199,7 @@ Screen > Container {
     border: round $border-color-nofocus;
     border-title-color: green;
     border-title-style: bold;
-    height: auto;
+    height: 80%;
     color: $base-color
 }
 
