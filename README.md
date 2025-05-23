@@ -4,7 +4,15 @@ issued from [https://github.com/Orange-Cyberdefense/arsenal](https://github.com/
 
 # Install
 
-`pipx install .`
+## local
+```bash
+pipx install .
+```
+
+## from git repo
+```bash
+pipx install git+https://github.com/jubeaz/arsenal-ng.git
+```
 
 ## TODO
 * work on options
@@ -22,3 +30,16 @@ issued from [https://github.com/Orange-Cyberdefense/arsenal](https://github.com/
 # CSS
 ## green monochrome
 
+# debug
+```
+python3 -m venv venv
+source .venv/bin/activate
+pip install -e .
+```
+
+in vscode
+```
+Ctrl + Shift + p
+Python: Select Interpreter
+Python xxx ('venv': venv) ./venv/bin/python
+```

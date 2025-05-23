@@ -6,7 +6,7 @@ arsenal/data/cheats/.obsidian/
 cheats/.obsidian/
 cheats/Arsenal/.obsidian/
 arsenal.egg-info/
-arsenal_cli.egg-info/
+arsenalng_cli.egg-info/
 build/
 dist/
 Pipfile.lock

@@ -62,7 +62,7 @@ class ArsenalNGGui(App):
         self.cmdline = ""
 
         self.tmux_session = None
-        if self.args.tmux is not None:
+        if self.args.tmux:
             self.tmux_mgr = TmuxManager(libtmux.Server())
         else:   
             self.tmux_mgr = None
